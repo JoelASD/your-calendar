@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Your Calendar</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    //login/registration
+    <string name="welcome">Welcome</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="login">Login</string>
+    <string name="signup">Signup</string>
+    <string name="forgotpsw">Forgot password?</string>
+    <string name="registration">Registration</string>
+    <string name="register">Register</string>
+    <string name="i_have_account">I already have an account</string>
+    <string name="enter_email_for_reset">Enter your email to reset password</string>
+    <string name="send_reset_email">Send password reset email</string>
+    <string name="to_login">Go back to login</string>
 </resources>
