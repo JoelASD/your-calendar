@@ -18,4 +18,36 @@
     <string name="enter_email_for_reset">Enter your email to reset password</string>
     <string name="send_reset_email">Send password reset email</string>
     <string name="to_login">Go back to login</string>
+    
+    <string-array name="type_array">
+        <item>Blue</item>
+        <item>Green</item>
+        <item>Red</item>
+        <item>Yellow</item>
+        <item>Pink</item>
+        <item>Purple</item>
+        <item>Brown</item>
+    </string-array>
+
+    <string-array name="repeat_array">
+        <item>No repeat</item>
+        <item>Every day</item>
+        <item>Every weekday</item>
+        <item>Once a week</item>
+        <item>Once a month</item>
+        <item>Once a year</item>
+    </string-array>
+
+    <string-array name="notification_array">
+        <item>At start time</item>
+        <item>5 minutes before</item>
+        <item>10 minutes before</item>
+        <item>15 minutes before</item>
+        <item>30 minutes before</item>
+        <item>1 hour before</item>
+        <item>2 hours before</item>
+        <item>1 day before</item>
+        <item>1 week before</item>
+        <item>At end time</item>
+    </string-array>
 </resources>

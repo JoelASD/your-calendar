@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
         // Navigator for fragments
-        appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home, R.id.nav_logout), drawerLayout)
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home, R.id.nav_new_event, R.id.nav_logout), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        //TODO: not sure if this is the best way?
+        /*//TODO: Not working properly?
         // Listen to logout button/ action
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId){
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> false
             }
-        }
+        }*/
 
     }
 

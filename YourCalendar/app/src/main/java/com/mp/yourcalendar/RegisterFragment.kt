@@ -11,10 +11,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
@@ -24,6 +28,10 @@ class RegisterFragment : Fragment() {
     private lateinit var passwordInput: EditText
     private lateinit var repeatPasswordInput: EditText
 
+    // Firebase
+    //private lateinit var auth: FirebaseAuth
+    private lateinit var database: DatabaseReference
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,6 +40,8 @@ class RegisterFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val registerView = inflater.inflate(R.layout.fragment_register, container, false)
+
+        //auth = FirebaseAuth.getInstance()
 
         // Get/listen to toLogInButton, set action
         val toLogInButton = registerView.findViewById<View>(R.id.toLogInButton) as Button
@@ -87,10 +97,10 @@ class RegisterFragment : Fragment() {
         Firebase.auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if(task.isSuccessful){
-                    //TODO: create users node to DB
-
                     // Send verification email
                     sendVerificationEmail()
+                    //create users node to DB
+                    createUserNodeToDB()
                     // Start MainActivity
                     var intent = Intent(activity!!, MainActivity::class.java)
                     startActivity(intent)
@@ -129,6 +139,16 @@ class RegisterFragment : Fragment() {
                     Toast.makeText(activity!!, "Could not send verification email", Toast.LENGTH_LONG).show()
                 }
             }
+    }
+
+    fun createUserNodeToDB(){
+        val userUID = Firebase.auth.uid
+        database = Firebase.database.reference
+        //val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+        //val ref: DatabaseReference = database.reference
+        if (userUID != null){
+            database.child("users").child(userUID).setValue(0)
+        }
     }
 
 }

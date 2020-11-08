@@ -12,4 +12,10 @@
         android:label="home"
         tools:layout="layout/fragment_home" />
 
+    <fragment
+        android:id="@+id/nav_new_event"
+        android:name="com.mp.yourcalendar.ui.newevent.NewEventFragment"
+        android:label="new event"
+        tools:layout="@layout/new_event_fragment" />
+
 </navigation>
