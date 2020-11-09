@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
 
         /*//TODO: Not working properly?
-        // Listen to logout button/ action
+        //Listen to logout button/ action
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId){
                 R.id.nav_logout -> {

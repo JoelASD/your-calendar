@@ -4,18 +4,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_home">
+    app:startDestination="@id/nav_home"> <!-- change id to @id/nav_graph -->
 
     <fragment
         android:id="@+id/nav_home"
         android:name="com.mp.yourcalendar.ui.home.HomeFragment"
         android:label="home"
-        tools:layout="layout/fragment_home" />
+        tools:layout="@layout/home_fragment" />
+        <!--tools:layout="layout/fragment_home" />-->
 
     <fragment
         android:id="@+id/nav_new_event"
         android:name="com.mp.yourcalendar.ui.newevent.NewEventFragment"
         android:label="new event"
-        tools:layout="@layout/new_event_fragment" />
+        tools:layout="@layout/new_event_fragment" >
+
+        <action
+            android:id="@+id/action_nav_new_event_to_nav_home"
+            app:destination="@+id/nav_home" />
+
+    </fragment>
 
 </navigation>

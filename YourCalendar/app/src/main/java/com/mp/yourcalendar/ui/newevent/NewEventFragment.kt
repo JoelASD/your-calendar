@@ -11,7 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.view.get
+import androidx.core.view.iterator
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
@@ -19,9 +21,11 @@ import com.google.firebase.ktx.Firebase
 import com.mp.yourcalendar.R
 import kotlinx.android.synthetic.main.new_event_fragment.*
 import java.text.DateFormat
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAmount
 import java.util.*
 
 class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
@@ -174,8 +178,9 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
         createEventButton.setOnClickListener {
             // Make sure also event name is given before saving new event to DB
             if (nameEditText.text.trim().isNotEmpty()){
-                //validateAndReadNotifications()
+                validateAndCreateNotifications()
                 newEventViewModel.saveEvent(nameEditText.text.toString(), descriptionEditText.text.toString(), locationEditText.text.toString())
+                findNavController().navigate(R.id.action_nav_new_event_to_nav_home)
             } else {
                 nameEditText.requestFocus()
                 nameEditText.error = "You must set a name for the event!"
@@ -264,34 +269,23 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
         notificationLayoutList.removeView(view)
     }
 
-    /*fun validateAndReadNotifications(){
+
+
+    fun validateAndCreateNotifications(){
+        // Clear notification list in case there is something left
         newEventViewModel.notificationList.clear()
-        for (item in newEventViewModel.notificationList){
 
+        //TODO: make sure no duplicate notifications
+        // Go through notificationLayoutList and make new notification
+        for (item in notificationLayoutList) {
+            val spinner = item.findViewById<Spinner>(R.id.notifSpinner)
+            val selectedNotificationTime = spinner.selectedItemPosition
+            //Log.d("NOTIFICATION", "$selectedNotificationTime")
+            newEventViewModel.setNotificationDateTime(selectedNotificationTime)
         }
-    }*/
 
-    /*ArrayAdapter.createFromResource(
-    requireActivity(),
-    R.array.repeat_array,
-    android.R.layout.simple_spinner_item
-    ).also { adapter ->
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        // Apply the adapter to the spinner
-        repeatSpinner.adapter = adapter
-        repeatSpinner.onItemSelectedListener = object :
-                AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Set the chosen items id to eventRepeat variable
-                newEventViewModel.eventRepeat = repeatSpinner.adapter.getItemId(position).toInt()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Use first option if nothing selected
-                newEventViewModel.eventRepeat = 0
-            }
-        }*/
+        Log.d("NOTIFICATIONS", "${newEventViewModel.notificationList}")
+    }
 
     /*override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
