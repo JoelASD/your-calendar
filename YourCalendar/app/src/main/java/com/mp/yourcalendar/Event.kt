@@ -10,7 +10,7 @@ data class Event (
     var eventType: Int,
     var eventRepeat: Int,
     var eventLocName: String?,
-    //var eventNotificationList: List<EventNotification>
+    var eventLocLatLng: String?,
     val eventNotificationList: MutableList<EventNotification> //var eventNotificationList: MutableList<EventNotification>
     //var eventNotification: EventNotification?
 )

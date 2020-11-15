@@ -1,5 +1,7 @@
 package com.mp.yourcalendar.ui.newevent
 
+import android.location.Address
+import android.location.Geocoder
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
@@ -32,9 +34,9 @@ class NewEventViewModel : ViewModel() {
     var eventType: Int = 0
     // Repeat
     var eventRepeat: Int = 0
-    // Location (class)
-    //lateinit var eventLocation: String
-    //lateinit var eventLocation: Location
+    // Location
+    var eventLocation: String? = null //or string
+    var eventLatLng: String? = null
     // Notifications
     var notificationList: MutableList<EventNotification> = mutableListOf()
     //var notificationList: List<EventNotification> = listOf()
@@ -292,17 +294,20 @@ class NewEventViewModel : ViewModel() {
         return formatted.split(" ")
     }
 
-    fun saveEvent(name: String, desc: String, loc: String){
+    fun saveEvent(name: String, desc: String?){
         //val notif = EventNotification("title", "description", "1.1.1111", "10:10")
         //val notif2 = EventNotification("title2", "description2", "2.2.2222", "20:20")
         //var lista = mutableListOf<EventNotification>(notif, notif2)
         //Log.d("NOTIFICATION", "Notification made: $notif")
-        event = Event(name, startDate, startTime, endDate, endTime, desc, eventType, eventRepeat, loc, notificationList)
+
+        event = Event(name, startDate, startTime, endDate, endTime, desc, eventType, eventRepeat, eventLocation, eventLatLng, notificationList)
         //Log.d("EVENT", "${event.eventName}, ${event.eventStartDate}, ${event.eventStartTime}, ${event.eventEndDate}, ${event.eventEndTime}, ${event.eventType}, ${event.eventRepeat}, ${event.eventLocName}, ${event.eventNotificationList.elementAt(0)}, ${event.eventNotificationList.elementAt(1)}")
         val userUID = Firebase.auth.uid
         if (userUID != null){
             database.child("users").child(userUID).push().setValue(event)
         }
     }
+
+
 
 }

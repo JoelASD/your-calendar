@@ -2,6 +2,8 @@ package com.mp.yourcalendar.ui.newevent
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.location.Address
+import android.location.Geocoder
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.view.get
+import androidx.core.view.isVisible
 import androidx.core.view.iterator
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -47,7 +50,13 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
     // Description
     private lateinit var descriptionEditText: EditText
     // Location
+    private lateinit var locHelperText: TextView
+    private lateinit var geocoder: Geocoder
+    //private lateinit var geoList: List<Address>
+    private lateinit var geoList: MutableList<Address>
     private lateinit var locationEditText: EditText
+    private lateinit var searchLocationButton: Button
+    private lateinit var geoLocationList: LinearLayout
     // Notifications
     private lateinit var notificationLayoutList: LinearLayout
     private lateinit var addNotificationButton: Button
@@ -162,8 +171,23 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
         // Description editText
         descriptionEditText = root.findViewById(R.id.newEventDescriptionEditText)
 
+        // Geocoder
+        geocoder = Geocoder(this.context)
+        locHelperText = root.findViewById(R.id.chooseLocationTextView)
         // Location editText
         locationEditText = root.findViewById(R.id.newEventLocationEditText)
+        // LocationListLayout
+        geoLocationList = root.findViewById(R.id.geolocationList)
+        // Location search button
+        searchLocationButton = root.findViewById(R.id.searchLocButton)
+        searchLocationButton.setOnClickListener {
+            if(locationEditText.text.trim().isNotEmpty()){
+                getLocation(locationEditText.text.trim().toString())
+            } else {
+                nameEditText.requestFocus()
+                nameEditText.error = "Enter an address and/or city"
+            }
+        }
 
         // Notification "holder"
         notificationLayoutList = root.findViewById(R.id.notificationList)
@@ -179,7 +203,8 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
             // Make sure also event name is given before saving new event to DB
             if (nameEditText.text.trim().isNotEmpty()){
                 validateAndCreateNotifications()
-                newEventViewModel.saveEvent(nameEditText.text.toString(), descriptionEditText.text.toString(), locationEditText.text.toString())
+                if(descriptionEditText.text.trim().toString().isEmpty()) newEventViewModel.saveEvent(nameEditText.text.toString(), null)
+                else newEventViewModel.saveEvent(nameEditText.text.toString(), descriptionEditText.text.toString())
                 findNavController().navigate(R.id.action_nav_new_event_to_nav_home)
             } else {
                 nameEditText.requestFocus()
@@ -285,6 +310,52 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
         }
 
         Log.d("NOTIFICATIONS", "${newEventViewModel.notificationList}")
+    }
+
+    // Search given location with geocoder
+    fun getLocation(loc: String){
+        geoList = geocoder.getFromLocationName(loc, 5)
+        //Log.d("*****", "$geoList")
+        //Log.d("*****", "${geoList.size}")
+
+        locHelperText.visibility = View.VISIBLE
+
+        //if only 1 result -> select it automatically
+        if(geoList.size == 1){
+            selectLocation(geoList[0].getAddressLine(0), "${geoList[0].latitude} ${geoList[0].longitude}")
+        } else {
+            for(item in geoList){
+                addLocationView(item)
+            }
+        }
+    }
+
+    // If multiple search result, show them in linearlayout
+    fun addLocationView(address: Address){
+        // Get a new row view
+        val locationView = layoutInflater.inflate(R.layout.row_location, null, false)
+
+        // Rows textView
+        val locationTextView: TextView = locationView.findViewById(R.id.rowLocationTextView)
+        val locationString: String = address.getAddressLine(0)
+        val locationLatLng: String = "${address.latitude} ${address.longitude}"
+        locationTextView.text = address.getAddressLine(0)
+
+        locationTextView.setOnClickListener {
+            selectLocation(locationString, locationLatLng)
+        }
+
+        geoLocationList.addView(locationView)
+    }
+
+    // Select address to use
+    fun selectLocation(loc: String, latlng: String){
+        newEventViewModel.eventLocation = loc
+        newEventViewModel.eventLatLng = latlng
+        //Log.d("******", "${newEventViewModel.eventLocation} ${newEventViewModel.eventLatLng}")
+        geoLocationList.removeAllViews()
+        locHelperText.visibility = View.GONE
+        locationEditText.setText(loc)
     }
 
     /*override fun onActivityCreated(savedInstanceState: Bundle?) {
