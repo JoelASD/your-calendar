@@ -2,22 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="160dp"
-    android:background="#E75DFF"
+    android:background="@drawable/mainbg_test"
     android:orientation="vertical"
-    android:gravity="bottom"
-    android:paddingHorizontal="16dp"
-    android:paddingVertical="16dp">
+    android:gravity="bottom">
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_calendar_icon_24" />
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/ic_yourcalendar_logo_test" />
 
     <TextView
+        android:id="@+id/authEmailTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:text="Your calendar" />
+        android:text="email" />
 
 </LinearLayout>
