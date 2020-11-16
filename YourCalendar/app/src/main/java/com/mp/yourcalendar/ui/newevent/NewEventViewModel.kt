@@ -2,6 +2,7 @@ package com.mp.yourcalendar.ui.newevent
 
 import android.location.Address
 import android.location.Geocoder
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
@@ -294,7 +295,12 @@ class NewEventViewModel : ViewModel() {
         return formatted.split(" ")
     }
 
-    fun saveEvent(name: String, desc: String?){
+    fun createEvent(name: String, desc: String?): Event{
+        val event = Event(name, startDate, startTime, endDate, endTime, desc, eventType, eventRepeat, eventLocation, eventLatLng, notificationList)
+        return event
+    }
+
+    /*fun saveEvent(name: String, desc: String?){
         //val notif = EventNotification("title", "description", "1.1.1111", "10:10")
         //val notif2 = EventNotification("title2", "description2", "2.2.2222", "20:20")
         //var lista = mutableListOf<EventNotification>(notif, notif2)
@@ -305,6 +311,14 @@ class NewEventViewModel : ViewModel() {
         val userUID = Firebase.auth.uid
         if (userUID != null){
             database.child("users").child(userUID).push().setValue(event)
+        }
+    }*/
+    fun saveEvent(event: Event){
+        val userUID = Firebase.auth.uid
+        if (userUID != null){
+            database.child("users").child(userUID).push().setValue(event)
+        } else {
+            Log.d("USER_ERROR", "Couldnt find user!")
         }
     }
 

@@ -18,7 +18,7 @@
     <string name="enter_email_for_reset">Enter your email to reset password</string>
     <string name="send_reset_email">Send password reset email</string>
     <string name="to_login">Go back to login</string>
-    
+
     <string-array name="type_array">
         <item>Blue</item>
         <item>Green</item>

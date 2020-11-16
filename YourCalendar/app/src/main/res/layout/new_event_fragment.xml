@@ -220,16 +220,17 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="6"
                         android:inputType="text"
+                        android:drawableEnd="@drawable/ic_baseline_location_searching_test_24"
                         android:hint="Address and/or city" />
 
-                    <Button
+                    <!--<Button
                         android:id="@+id/searchLocButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.1"
                         android:layout_marginStart="4dp"
                         android:background="@drawable/circle_button_test"
-                        android:text="Q" />
+                        android:text="Q" /> -->
 
                 </LinearLayout>
 

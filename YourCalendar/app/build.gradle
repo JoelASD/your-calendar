@@ -3,6 +3,9 @@ plugins {
     id 'kotlin-android'
     id 'com.google.gms.google-services'
     id 'kotlin-android-extensions'
+
+    //details / safeargs
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
@@ -58,4 +61,12 @@ dependencies {
     // Firebase realtime database
     implementation 'com.google.firebase:firebase-database:19.5.1'
     implementation 'com.google.firebase:firebase-database-ktx'
+
+    // Maps
+    implementation "com.google.android.gms:play-services-maps:17.0.0"
+
+    // Volley & Glide for weather
+    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
 }

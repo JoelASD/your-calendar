@@ -10,7 +10,11 @@
         android:id="@+id/nav_home"
         android:name="com.mp.yourcalendar.ui.home.HomeFragment"
         android:label="home"
-        tools:layout="@layout/home_fragment" />
+        tools:layout="@layout/home_fragment" >
+        <action
+            android:id="@+id/action_nav_home_to_eventDetailFragment"
+            app:destination="@id/eventDetailFragment" />
+    </fragment>
         <!--tools:layout="layout/fragment_home" />-->
 
     <fragment
@@ -20,9 +24,22 @@
         tools:layout="@layout/new_event_fragment" >
 
         <action
-            android:id="@+id/action_nav_new_event_to_nav_home"
-            app:destination="@+id/nav_home" />
+            android:id="@+id/action_nav_new_event_to_event_detail"
+            app:destination="@+id/eventDetailFragment" />
 
+    </fragment>
+
+    <fragment
+        android:id="@+id/eventDetailFragment"
+        android:name="com.mp.yourcalendar.EventDetailFragment"
+        android:label="event detail"
+        tools:layout="@layout/fragment_event_detail" >
+        <argument
+            android:name="currentEvent"
+            app:argType="com.mp.yourcalendar.Event" />
+        <action
+            android:id="@+id/action_event_detail_to_nav_home"
+            app:destination="@id/nav_home" />
     </fragment>
 
 </navigation>
