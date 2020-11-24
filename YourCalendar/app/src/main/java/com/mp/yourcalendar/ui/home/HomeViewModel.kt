@@ -13,20 +13,21 @@ import com.mp.yourcalendar.Event
 
 class HomeViewModel : ViewModel() {
 
-    private lateinit var ref: DatabaseReference
-    private var eventList: MutableList<Event> = mutableListOf()
-    private lateinit var auth: FirebaseAuth
-
-
     /*
     *
     * Not on use currently
-    *
+    * Probably to be removed
     *
     *
      */
 
-    fun getEvents(): MutableList<Event> {
+
+    /*private lateinit var ref: DatabaseReference
+    private var eventList: MutableList<Event> = mutableListOf()
+    private lateinit var auth: FirebaseAuth*/
+
+
+    /*fun getEvents(): MutableList<Event> {
         auth = FirebaseAuth.getInstance()
         ref = FirebaseDatabase.getInstance().getReference("users").child(auth.uid.toString())
 
@@ -49,5 +50,5 @@ class HomeViewModel : ViewModel() {
             }
         })
         return eventList
-    }
+    }*/
 }
