@@ -16,24 +16,57 @@ import com.mp.yourcalendar.R
 import com.mp.yourcalendar.ui.newevent.NewEventFragmentDirections
 import kotlinx.android.synthetic.main.event_item.view.*
 
-/*class EventsAdapter(val mContext: Context, val layoutResId: Int, val eventList: MutableList<Event>) : ArrayAdapter<Event>(mContext, layoutResId, eventList) {
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val layoutInflater: LayoutInflater = LayoutInflater.from(context)
-        val view: View = layoutInflater.inflate(layoutResId, null)
+class EventsAdapter(private val parentFragment: HomeFragment, events: MutableList<Event>) : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
+    private val onClickListener: View.OnClickListener
 
-        val itemNameText = view.findViewById<TextView>(R.id.itemNameTextView)
-        val itemStartDateTime = view.findViewById<TextView>(R.id.itemDateTimeTextView)
+    private val eventit: MutableList<Event> = events
 
-        val event = eventList[position]
-
-        itemNameText.text = event.eventName
-        itemStartDateTime.text = "${event.eventStartDate} - ${event.eventStartTime}"
-
-        return view
+    companion object {
+        var position: Int = 0
     }
-}*/
 
-class EventsAdapter(private val parentFragment: HomeFragment) : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
+    init {
+        onClickListener = View.OnClickListener { v ->
+            position = v.tag as Int
+
+            val dEvent: Event = eventit[position]
+            Log.d("Event", "${dEvent.eventName}")
+
+            val action: NavDirections = HomeFragmentDirections.actionNavHomeToEventDetailFragment(dEvent)
+            parentFragment.findNavController().navigate(action)
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventsAdapter.ViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val view = layoutInflater.inflate(R.layout.event_item, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun getItemCount(): Int = eventit.size
+
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
+        val nameTextView: TextView = view.itemNameTextView
+        val startDateTimeText: TextView = view.itemTimeTextView
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        val e: Event = eventit.get(position)
+        //name
+        holder.nameTextView.text = e.eventName
+        //startdatetime
+        holder.startDateTimeText.text = "${e.eventStartTime} - ${e.eventEndTime}"
+
+        // Onclicklistener for viewholders
+        with(holder.itemView) {
+            tag = position
+            setOnClickListener(onClickListener)
+        }
+    }
+}
+
+/*class EventsAdapter(private val parentFragment: HomeFragment) : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
     private val onClickListener: View.OnClickListener
 
     companion object {
@@ -78,4 +111,4 @@ class EventsAdapter(private val parentFragment: HomeFragment) : RecyclerView.Ada
             setOnClickListener(onClickListener)
         }
     }
-}
+}*/

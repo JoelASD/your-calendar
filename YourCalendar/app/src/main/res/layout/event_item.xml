@@ -6,20 +6,31 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/boxbg_test"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="4dp"
     android:layout_marginBottom="4dp">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/itemNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="20dp"
+        tools:text="Meeting with friend" />
+
+    <TextView
+        android:id="@+id/itemTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:text="12:30" />
+
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/boxbg_test"
         android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/bulletView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="\u2022"
-            android:textSize="60dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -52,6 +63,6 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+    </LinearLayout>-->
 
 </LinearLayout>
