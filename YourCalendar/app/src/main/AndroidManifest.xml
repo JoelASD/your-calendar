@@ -11,6 +11,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.YourCalendar">
+        <receiver android:name=".CalendarAppWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info" />
+        </receiver>
+
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDCMJTD8e4kqs_j2ueRc2sW4efG4wB_0oY" />
         <activity android:name=".AuthActivity"></activity>
         <activity
