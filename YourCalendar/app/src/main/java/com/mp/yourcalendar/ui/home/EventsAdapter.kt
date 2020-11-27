@@ -15,6 +15,7 @@ import com.mp.yourcalendar.Event
 import com.mp.yourcalendar.R
 import com.mp.yourcalendar.ui.newevent.NewEventFragmentDirections
 import kotlinx.android.synthetic.main.event_item.view.*
+import org.w3c.dom.Text
 
 class EventsAdapter(private val parentFragment: HomeFragment, events: MutableList<Event>) : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
     private val onClickListener: View.OnClickListener
@@ -48,6 +49,8 @@ class EventsAdapter(private val parentFragment: HomeFragment, events: MutableLis
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val nameTextView: TextView = view.itemNameTextView
         val startDateTimeText: TextView = view.itemTimeTextView
+        val colorTextView: TextView = view.colortextView
+
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -57,6 +60,18 @@ class EventsAdapter(private val parentFragment: HomeFragment, events: MutableLis
         holder.nameTextView.text = e.eventName
         //startdatetime
         holder.startDateTimeText.text = "${e.eventStartTime} - ${e.eventEndTime}"
+        //color of the event
+        when (e.eventType) {
+            0 -> holder.colorTextView.setBackgroundResource(R.color.blue)
+            1 -> holder.colorTextView.setBackgroundResource(R.color.green)
+            2 -> holder.colorTextView.setBackgroundResource(R.color.red)
+            3 -> holder.colorTextView.setBackgroundResource(R.color.yellow)
+            4 -> holder.colorTextView.setBackgroundResource(R.color.pink)
+            5 -> holder.colorTextView.setBackgroundResource(R.color.purple)
+            6 -> holder.colorTextView.setBackgroundResource(R.color.brown)
+            else -> holder.colorTextView.setBackgroundResource(R.color.black)
+        }
+
 
         // Onclicklistener for viewholders
         with(holder.itemView) {

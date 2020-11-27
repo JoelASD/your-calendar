@@ -41,70 +41,12 @@
             android:id="@+id/dayTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mo, "
             android:textSize="24dp"/>
 
-        <TextView
-            android:id="@+id/dateTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="24.11"
-            android:textSize="24dp"
-            android:layout_marginRight="16dp"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/colorTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:height="12dp"
-            android:width="12dp"
-            android:background="@drawable/box_red"
-            android:layout_gravity="center"
-            android:layout_marginLeft="4dp"
-
-            />
-
-        <TextView
-            android:id="@+id/eventTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Meeting with John"
-            android:layout_marginLeft="4dp" />
-
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+    <include layout="@layout/event_widget_item" />
 
-        <TextView
-            android:id="@+id/eventStartTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="21dp"
-            android:text="12:30" />
-
-        <TextView
-            android:id="@+id/connectTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" - " />
-
-        <TextView
-            android:id="@+id/eventEndTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="14:30" />
-
-    </LinearLayout>
 
 </LinearLayout>

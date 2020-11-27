@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/boxbg_test"
@@ -12,19 +12,37 @@
     android:layout_marginBottom="4dp">
 
     <TextView
-        android:id="@+id/itemNameTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="20dp"
-        tools:text="Meeting with friend" />
+        android:id="@+id/colortextView"
+        android:layout_width="8dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:layout_gravity="center"
+        android:background="@drawable/box_red"
+        android:layout_marginRight="6dp"
+        android:text="" />
 
-    <TextView
-        android:id="@+id/itemTimeTextView"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:text="12:30" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/itemTimeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            tools:text="12:30" />
+
+        <TextView
+            android:id="@+id/itemNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textSize="20dp"
+            tools:text="Meeting with friend" />
+
+    </LinearLayout>
 
     <!--<LinearLayout
         android:layout_width="match_parent"
