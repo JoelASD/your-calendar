@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <LinearLayout
@@ -37,23 +38,12 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/eventStartTextView"
+            android:id="@+id/eventDateTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="21dp"
-            android:text="12:30" />
+            tools:text="Fr. 12:00 - 13:00" />
 
-        <TextView
-            android:id="@+id/connectTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" - " />
-
-        <TextView
-            android:id="@+id/eventEndTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="14:30" />
 
     </LinearLayout>
 

@@ -28,19 +28,19 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/itemTimeTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            tools:text="12:30" />
-
-        <TextView
             android:id="@+id/itemNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
             android:textSize="20dp"
             tools:text="Meeting with friend" />
+
+        <TextView
+            android:id="@+id/itemTimeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            tools:text="12:30" />
 
     </LinearLayout>
 

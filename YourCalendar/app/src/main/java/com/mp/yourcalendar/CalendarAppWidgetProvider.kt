@@ -5,7 +5,12 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import android.widget.RemoteViews
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 import com.mp.yourcalendar.ui.home.HomeFragment
 import java.text.SimpleDateFormat
 import java.util.*
@@ -19,6 +24,10 @@ class CalendarAppWidgetProvider : AppWidgetProvider() {
 
     }
 
+    // Firebase
+    private lateinit var auth: FirebaseAuth
+    private lateinit var ref: DatabaseReference
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -31,41 +40,41 @@ class CalendarAppWidgetProvider : AppWidgetProvider() {
                 .let { intent ->
                     PendingIntent.getActivity(context, 0, intent, 0)
                 }
+
+            // Set up the intent that starts the EventWidgetService, which will
+            // provide the views for this collection.
+            val intent = Intent(context, EventWidgetService::class.java).apply {
+                // Add the app widget ID to the intent extras.
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
+            }
+
             //get the layout for the App Widget and attach on click listener to the button
             val views: RemoteViews = RemoteViews(context.packageName, R.layout.event_appwidget).apply {
                 setOnClickPendingIntent(R.id.clickTextView, pendingIntent)
+
+                // Set up the RemoteViews object to use a RemoteViews adapter.
+                // This adapter connects
+                // to a RemoteViewsService  through the specified intent.
+                // This is how you populate the data.
+                setRemoteAdapter(R.id.listView, intent)
+
+                // The empty view is displayed when the collection has no items.
+                // It should be in the same layout used to instantiate the RemoteViews
+                // object above.
+                //setEmptyView(R.id.listView, R.id.empty_view)
             }
             //just a test for updating day
             loadDateView(views)
-         //   test123(views)
             //tell the Appwidgetmanager to perform an update on current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views)
-
         }
+        super.onUpdate(context, appWidgetManager, appWidgetIds)
     }
 
     //Setting the date of the top of the widget
     fun loadDateView(views: RemoteViews){
         val weekday = SimpleDateFormat("EEEE, dd")
         views.setTextViewText(R.id.dayTextView, weekday.format(Date()))
-    }
-
-    fun test123(views: RemoteViews) {
-            val strangeDate = SimpleDateFormat("dd/MM/yyyy")
-        val testString = strangeDate.format(Date())
-        for (event in properList) {
-            if(event.eventStartDate == testString){
-                views.setTextViewText(R.id.dayTextView, testString)
-            }
-        }
-    }
-
-    fun getEventList(date: String) {
-        val widgetList: MutableList<Event> = mutableListOf()
-        for (event in properList){
-            if (event.eventStartDate == date) {
-                widgetList.add(event)
-            }
-        }
     }
 }
