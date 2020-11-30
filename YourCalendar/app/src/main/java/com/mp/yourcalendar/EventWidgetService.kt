@@ -3,6 +3,7 @@ package com.mp.yourcalendar
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
@@ -39,15 +40,26 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
         ref = FirebaseDatabase.getInstance().getReference("users").child(auth.uid.toString())
         // Listener for users data, runs at activity created and when data is changed
 
+        val weekday = SimpleDateFormat("dd/MM/yyyy")
+        val justADateString = weekday.format(Date())
+        events.clear()
+
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val newList: MutableList<Event> = mutableListOf()
                 for (e in snapshot.children) {
                     val event = e.getValue<Event>()
-                    newList.add(event!!)
+                    //checking for the Event, if for today
+                    //idea behind the widget was, that it shows only the events, which are planned for today
+                    if (event!!.eventStartDate == justADateString) {
+                        newList.add(event!!)
+                    }
                 }
                 //databaseLoaded(newList)
                 Log.d("DATABASE", "Users data was accessed")
+                if (newList.isEmpty()) {
+
+                }
                 events = newList
 
                 val appWidgetManager = context.getSystemService(AppWidgetManager::class.java)
@@ -87,6 +99,18 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
         val rv = RemoteViews(context.packageName, R.layout.event_widget_item)
 
         rv.setTextViewText(R.id.eventTextView, event.eventName)
+
+        //Event type coloring
+        when (event.eventType) {
+            0 -> rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_blue)
+            1 -> rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_green)
+            2 -> rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_red)
+            3 -> rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_yellow)
+            4 -> rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_pink)
+            5 -> rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_purple)
+            6 -> rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_brown)
+            else -> rv.setInt(R.id.colorTextView, "setBackgroundColor", Color.BLACK)
+        }
 
         // String -> Date
         val dateParser = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ROOT)

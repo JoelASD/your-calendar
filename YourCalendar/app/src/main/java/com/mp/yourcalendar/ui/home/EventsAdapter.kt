@@ -61,14 +61,15 @@ class EventsAdapter(private val parentFragment: HomeFragment, events: MutableLis
         //startdatetime
         holder.startDateTimeText.text = "${e.eventStartTime} - ${e.eventEndTime}"
         //color of the event
+        //rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_blue)
         when (e.eventType) {
-            0 -> holder.colorTextView.setBackgroundResource(R.color.blue)
-            1 -> holder.colorTextView.setBackgroundResource(R.color.green)
-            2 -> holder.colorTextView.setBackgroundResource(R.color.red)
-            3 -> holder.colorTextView.setBackgroundResource(R.color.yellow)
-            4 -> holder.colorTextView.setBackgroundResource(R.color.pink)
-            5 -> holder.colorTextView.setBackgroundResource(R.color.purple)
-            6 -> holder.colorTextView.setBackgroundResource(R.color.brown)
+            0 -> holder.colorTextView.setBackgroundResource(R.drawable.box_blue)
+            1 -> holder.colorTextView.setBackgroundResource(R.drawable.box_green)
+            2 -> holder.colorTextView.setBackgroundResource(R.drawable.box_red)
+            3 -> holder.colorTextView.setBackgroundResource(R.drawable.box_yellow)
+            4 -> holder.colorTextView.setBackgroundResource(R.drawable.box_pink)
+            5 -> holder.colorTextView.setBackgroundResource(R.drawable.box_purple)
+            6 -> holder.colorTextView.setBackgroundResource(R.drawable.box_brown)
             else -> holder.colorTextView.setBackgroundResource(R.color.black)
         }
 
