@@ -20,6 +20,7 @@
                 android:resource="@xml/appwidget_info" />
         </receiver>
 
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDCMJTD8e4kqs_j2ueRc2sW4efG4wB_0oY" />

@@ -95,11 +95,14 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
     override fun getViewAt(position: Int): RemoteViews {
         val event = events[position]
         Log.d("EventWidgetService", "$position: ${event.eventName}")
-
         val rv = RemoteViews(context.packageName, R.layout.event_widget_item)
-
         rv.setTextViewText(R.id.eventTextView, event.eventName)
 
+       /* if (position % 2 == 1) {
+            rv.setInt(R.id.linearLayoutWidgetList, "setBackgroundColor", Color.LTGRAY)
+            rv.setInt(R.id.eventTextView, "setTextColor", Color.WHITE)
+            rv.setInt(R.id.eventDateTextView, "setTextColor", Color.WHITE)
+        } */
         //Event type coloring
         when (event.eventType) {
             0 -> rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_blue)
