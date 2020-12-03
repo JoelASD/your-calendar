@@ -15,6 +15,7 @@ import com.mp.yourcalendar.Event
 import com.mp.yourcalendar.EventNotification
 import com.mp.yourcalendar.MainActivity
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.CalendarMode
 import kotlinx.android.synthetic.main.event_appwidget.*
 import kotlinx.android.synthetic.main.event_list.*
 import kotlinx.android.synthetic.main.home_fragment.*
@@ -65,7 +66,6 @@ class HomeFragment : Fragment() {
             getDailyEvents(chosenDate)
             dateChecker.text = chosenDate
         }
-
     }
 
     // Gets list of events and runs EventsAdapter with them to show in recyclerView

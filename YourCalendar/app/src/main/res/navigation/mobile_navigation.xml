@@ -40,6 +40,19 @@
         <action
             android:id="@+id/action_event_detail_to_nav_home"
             app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_event_detail_to_event_edit"
+            app:destination="@id/eventEditFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/eventEditFragment"
+        android:name="com.mp.yourcalendar.EventEditFragment"
+        android:label="edit event"
+        tools:layout="@layout/fragment_event_edit" >
+        <argument
+            android:name="currentEvent"
+            app:argType="com.mp.yourcalendar.Event" />
     </fragment>
 
 </navigation>

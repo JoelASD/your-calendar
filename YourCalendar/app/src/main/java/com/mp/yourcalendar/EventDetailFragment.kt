@@ -117,6 +117,12 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
+        // Edit button
+        editEventButton.setOnClickListener {
+            val action: NavDirections = EventDetailFragmentDirections.actionEventDetailToEventEdit(args.currentEvent)
+            findNavController().navigate(action)
+        }
+
         // Delete button
         deleteEventButton.setOnClickListener {
             deleteEvent(args.currentEvent.eventKey!!)

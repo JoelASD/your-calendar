@@ -210,7 +210,7 @@ class NewEventViewModel : ViewModel() {
         // 0=at start, 1=5m, 2=10m, 3=15m, 4=30m, 5=1h, 6=2h, 7=1d, 8=1w, 9=at end
         when(selection){
             0 -> {
-                notificationList.add(EventNotification(startDate, startTime))
+                notificationList.add(EventNotification(startDate, startTime, 0))
             }
             1 -> {
                 // Minus 5min for startDateTime
@@ -218,7 +218,7 @@ class NewEventViewModel : ViewModel() {
                 // Get new date and time
                 val newParts: List<String> = parseAndSetNewDT(newDT)
                 // Add them to the list as new EventNotification instances
-                notificationList.add(EventNotification(newParts[0], newParts[1]))
+                notificationList.add(EventNotification(newParts[0], newParts[1], 1))
             }
             2 -> {
                 //Minus 10min for startDateTime
@@ -226,7 +226,7 @@ class NewEventViewModel : ViewModel() {
                 // Get new date and time
                 val newParts: List<String> = parseAndSetNewDT(newDT)
                 // Add them to the list as new EventNotification instances
-                notificationList.add(EventNotification(newParts[0], newParts[1]))
+                notificationList.add(EventNotification(newParts[0], newParts[1], 2))
             }
             3 -> {
                 //Minus 15min for startDateTime
@@ -234,7 +234,7 @@ class NewEventViewModel : ViewModel() {
                 // Get new date and time
                 val newParts: List<String> = parseAndSetNewDT(newDT)
                 // Add them to the list as new EventNotification instances
-                notificationList.add(EventNotification(newParts[0], newParts[1]))
+                notificationList.add(EventNotification(newParts[0], newParts[1], 3))
             }
             4 -> {
                 //Minus 30min for startDateTime
@@ -242,7 +242,7 @@ class NewEventViewModel : ViewModel() {
                 // Get new date and time
                 val newParts: List<String> = parseAndSetNewDT(newDT)
                 // Add them to the list as new EventNotification instances
-                notificationList.add(EventNotification(newParts[0], newParts[1]))
+                notificationList.add(EventNotification(newParts[0], newParts[1], 4))
             }
             5 -> {
                 //Minus 1h for startDateTime
@@ -250,7 +250,7 @@ class NewEventViewModel : ViewModel() {
                 // Get new date and time
                 val newParts: List<String> = parseAndSetNewDT(newDT)
                 // Add them to the list as new EventNotification instances
-                notificationList.add(EventNotification(newParts[0], newParts[1]))
+                notificationList.add(EventNotification(newParts[0], newParts[1], 5))
             }
             6 -> {
                 //Minus 2h for startDateTime
@@ -258,7 +258,7 @@ class NewEventViewModel : ViewModel() {
                 // Get new date and time
                 val newParts: List<String> = parseAndSetNewDT(newDT)
                 // Add them to the list as new EventNotification instances
-                notificationList.add(EventNotification(newParts[0], newParts[1]))
+                notificationList.add(EventNotification(newParts[0], newParts[1], 6))
             }
             7 -> {
                 //Minus 1d for startDateTime
@@ -266,7 +266,7 @@ class NewEventViewModel : ViewModel() {
                 // Get new date and time
                 val newParts: List<String> = parseAndSetNewDT(newDT)
                 // Add them to the list as new EventNotification instances
-                notificationList.add(EventNotification(newParts[0], newParts[1]))
+                notificationList.add(EventNotification(newParts[0], newParts[1], 7))
             }
             8 -> {
                 //Minus 1w for startDateTime
@@ -274,10 +274,10 @@ class NewEventViewModel : ViewModel() {
                 // Get new date and time
                 val newParts: List<String> = parseAndSetNewDT(newDT)
                 // Add them to the list as new EventNotification instances
-                notificationList.add(EventNotification(newParts[0], newParts[1]))
+                notificationList.add(EventNotification(newParts[0], newParts[1], 8))
             }
             9 -> {
-                notificationList.add(EventNotification(endDate, endTime))
+                notificationList.add(EventNotification(endDate, endTime, 9))
             }
         }
     }

@@ -189,6 +189,14 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/editEventButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="8dp"
+            android:text="Edit" />
+
+        <Button
             android:id="@+id/deleteEventButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

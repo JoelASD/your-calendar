@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.newevent.NewEventFragment"
+    tools:context=".EventEditFragment"
     android:background="@drawable/mainbg_test">
 
     <ScrollView
@@ -24,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Add new event"
+                android:text="Edit"
                 android:textSize="25sp"
                 android:shadowColor="#bac7be"
                 android:shadowDx="4"
@@ -44,7 +43,7 @@
                 android:elevation="8dp">
 
                 <EditText
-                    android:id="@+id/newEventNameEditText"
+                    android:id="@+id/editEventNameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -69,7 +68,7 @@
                         android:textSize="20sp" />
 
                     <Button
-                        android:id="@+id/newEventStartDateButton"
+                        android:id="@+id/editEventStartDateButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -79,7 +78,7 @@
                         android:textSize="16sp" />
 
                     <Button
-                        android:id="@+id/newEventStartTimeButton"
+                        android:id="@+id/editEventStartTimeButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
@@ -105,7 +104,7 @@
                         android:text="End:" />
 
                     <Button
-                        android:id="@+id/newEventEndDateButton"
+                        android:id="@+id/editEventEndDateButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -115,7 +114,7 @@
                         android:text="13.13.2020" />
 
                     <Button
-                        android:id="@+id/newEventEndTimeButton"
+                        android:id="@+id/editEventEndTimeButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
@@ -151,7 +150,7 @@
                             android:text="Type" />
 
                         <Spinner
-                            android:id="@+id/newEventTypeSpinner"
+                            android:id="@+id/editEventTypeSpinner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
@@ -172,7 +171,7 @@
                             android:text="Repeating" />
 
                         <Spinner
-                            android:id="@+id/newEventRepeatSpinner"
+                            android:id="@+id/editEventRepeatSpinner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
@@ -193,7 +192,7 @@
                 android:elevation="8dp" >
 
                 <EditText
-                    android:id="@+id/newEventDescriptionEditText"
+                    android:id="@+id/editEventDescriptionEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -215,7 +214,7 @@
                     android:layout_marginTop="8dp" >
 
                     <EditText
-                        android:id="@+id/newEventLocationEditText"
+                        android:id="@+id/editEventLocationEditText"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="6"
@@ -223,19 +222,10 @@
                         android:drawableEnd="@drawable/ic_baseline_location_searching_test_24"
                         android:hint="Address and/or city" />
 
-                    <!--<Button
-                        android:id="@+id/searchLocButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.1"
-                        android:layout_marginStart="4dp"
-                        android:background="@drawable/circle_button_test"
-                        android:text="Q" /> -->
-
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/chooseLocationTextView"
+                    android:id="@+id/editChooseLocationTextView"
                     android:layout_width="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_height="wrap_content"
@@ -243,7 +233,7 @@
                     android:visibility="gone" />
 
                 <LinearLayout
-                    android:id="@+id/geolocationList"
+                    android:id="@+id/editGeolocationList"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -254,7 +244,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/notificationList"
+                    android:id="@+id/editNotificationList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -265,7 +255,7 @@
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/newEventAddNotificationButton"
+                    android:id="@+id/editEventAddNotificationButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -277,7 +267,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/newEventCreateButton"
+                android:id="@+id/editEventSaveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -290,4 +280,4 @@
 
     </ScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
