@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding ="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:id="@+id/linearLayoutWidgetList"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
@@ -26,12 +27,6 @@
             android:text="Meeting with John"
             android:layout_marginLeft="4dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hey there"
-            android:layout_marginLeft="5dp"
-            />
     </LinearLayout>
 
     <LinearLayout
@@ -47,8 +42,13 @@
             tools:text="Fr. 12:00 - 13:00" />
 
 
-    </LinearLayout>
 
+    </LinearLayout>
+    <TextView
+        android:id="@+id/eventDescriptionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="just an example for a deschription text" />
 
 </LinearLayout>
 

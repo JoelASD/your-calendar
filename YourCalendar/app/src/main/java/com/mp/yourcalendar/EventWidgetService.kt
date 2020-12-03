@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
 import java.text.SimpleDateFormat
+import java.time.LocalTime
 import java.util.*
 
 class EventWidgetService: RemoteViewsService() {
@@ -38,12 +39,15 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
 
         // Set database reference
         ref = FirebaseDatabase.getInstance().getReference("users").child(auth.uid.toString())
-        // Listener for users data, runs at activity created and when data is changed
 
+        //checking if users event is active for the day
         val weekday = SimpleDateFormat("dd/MM/yyyy")
         val justADateString = weekday.format(Date())
-        events.clear()
+        //checking daytime
+        val daytime = SimpleDateFormat("HH:mm")
 
+        events.clear()
+        // Listener for users data, runs at activity created and when data is changed
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val newList: MutableList<Event> = mutableListOf()
@@ -55,12 +59,18 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
                         newList.add(event!!)
                     }
                 }
+                putInOrder(newList)
                 //databaseLoaded(newList)
                 Log.d("DATABASE", "Users data was accessed")
                 if (newList.isEmpty()) {
 
                 }
                 events = newList
+                if(events.isEmpty()) {
+
+                   // val eventEmpty: Event = Event("No events planned for today", "","","","","No events today", 0,)
+                }
+
 
                 val appWidgetManager = context.getSystemService(AppWidgetManager::class.java)
                 appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.listView)
@@ -98,11 +108,15 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
         val rv = RemoteViews(context.packageName, R.layout.event_widget_item)
         rv.setTextViewText(R.id.eventTextView, event.eventName)
 
-       /* if (position % 2 == 1) {
+        if (position % 2 == 1) {
+            rv.setInt(R.id.linearLayoutWidgetList, "setBackgroundColor", Color.WHITE)
+            rv.setInt(R.id.eventTextView, "setTextColor", Color.DKGRAY)
+            rv.setInt(R.id.eventDateTextView, "setTextColor", Color.DKGRAY)
+        } else {
             rv.setInt(R.id.linearLayoutWidgetList, "setBackgroundColor", Color.LTGRAY)
             rv.setInt(R.id.eventTextView, "setTextColor", Color.WHITE)
             rv.setInt(R.id.eventDateTextView, "setTextColor", Color.WHITE)
-        } */
+        }
         //Event type coloring
         when (event.eventType) {
             0 -> rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_blue)
@@ -145,4 +159,20 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
     override fun hasStableIds(): Boolean {
         return true
     }
+
+    //To compare Time of the event and change the order in the List
+    fun putInOrder(list: MutableList<Event>) {
+        val helperList: MutableList<Event> = list
+        for(pos in 1 until list.size) {
+            val sTimePart: List<String> = list[pos].eventStartTime.split(":")
+            for(item in helperList) {
+                val sTimePart2: List<String> = item.eventStartTime.split(":")
+                if(LocalTime.of(sTimePart[0].toInt(), sTimePart[1].toInt()).isBefore(LocalTime.of(sTimePart2[0].toInt(), sTimePart2[1].toInt()))) {
+                    Collections.swap(helperList, pos - 1, pos )
+                    break
+                }
+            }
+        }
+    }
+
 }

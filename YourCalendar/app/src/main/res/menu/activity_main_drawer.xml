@@ -10,6 +10,15 @@
             android:icon="@drawable/ic_home_icon_24"
             android:title="Home" />
         <item
+            android:id="@+id/nav_weekly_view"
+            android:title="Week View" />
+        <item
+            android:id="@+id/nav_monthly_view"
+            android:title="Monthly View" />
+        <item
+            android:id="@+id/nav_yearly_view"
+            android:title="Year View" />
+        <item
             android:id="@+id/nav_new_event"
             android:icon="@drawable/ic_add_icon_24"
             android:title="New Event" />

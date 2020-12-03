@@ -37,7 +37,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="320dp"
                 app:mcv_selectionColor="#636363"
-                app:mcv_showOtherDates="all" />
+                app:mcv_showOtherDates="all"
+                />
 
         </FrameLayout>
 
