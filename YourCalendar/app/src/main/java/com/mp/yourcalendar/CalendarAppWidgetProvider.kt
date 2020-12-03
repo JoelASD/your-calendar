@@ -17,16 +17,6 @@ import java.util.*
 
 class CalendarAppWidgetProvider : AppWidgetProvider() {
 
-    companion object HomeFragment {
-        var eventList: MutableList<Event> = mutableListOf()
-        var properList: MutableList<Event> = mutableListOf()
-
-    }
-
-    // Firebase
-    private lateinit var auth: FirebaseAuth
-    private lateinit var ref: DatabaseReference
-
     override fun onUpdate(
             context: Context,
             appWidgetManager: AppWidgetManager,
@@ -61,11 +51,10 @@ class CalendarAppWidgetProvider : AppWidgetProvider() {
                 // The empty view is displayed when the collection has no items.
                 // It should be in the same layout used to instantiate the RemoteViews
                 // object above.
-                //setEmptyView(R.id.listView, R.id.empty_view)
+                setEmptyView(R.id.listView, R.id.empty_view)
             }
             //just a test for updating day
             loadDateView(views)
-            changeText(views)
 
             //tell the Appwidgetmanager to perform an update on current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views)
@@ -77,10 +66,6 @@ class CalendarAppWidgetProvider : AppWidgetProvider() {
     fun loadDateView(views: RemoteViews){
         val weekday = SimpleDateFormat("EEEE, dd")
         views.setTextViewText(R.id.dayTextView, weekday.format(Date()))
-    }
-
-    fun changeText(views: RemoteViews) {
-        views.setTextViewText(R.id.nextDaytextView, "Nothing planned for today :)")
     }
 
     override fun onAppWidgetOptionsChanged(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetId: Int, newOptions: Bundle?) {
@@ -95,14 +80,4 @@ class CalendarAppWidgetProvider : AppWidgetProvider() {
         //get the right widget and update it
    //     appWidgetManager.updateAppWidget(appWidgetId, getRemoteViews(context, appWidgetManager, appWidgetId, newOptions))
     }
-
-    private fun getCellsForSize(size: Int): Int {
-        var n = 2
-        while (70 * n - 30 < size) {
-            ++n
-        }
-        return n - 1
-    }
-
-
 }

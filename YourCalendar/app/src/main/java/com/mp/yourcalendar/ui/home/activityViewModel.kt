@@ -43,6 +43,8 @@ class activityViewModel(application: Application): AndroidViewModel(application)
 
     val withMultipleDaysList: MutableList<Event> = mutableListOf()
 
+    val calendarType = MutableLiveData<Int>()
+
     fun setEventList(eList: MutableList<Event>, kList: MutableList<String>) {
         //eventList.value = list
         //TODO: Find proper way
@@ -54,6 +56,10 @@ class activityViewModel(application: Application): AndroidViewModel(application)
         helperList.addAll(multipleDayEvents(eList))
         properList.value = addRepeats(helperList)
         //Log.d("VIEWMODEL", "eventlist updated ${properList.value}")
+    }
+    fun changeCalendarView(statusInt : Int) {
+        calendarType.value = statusInt
+        Log.d("change", "$statusInt")
     }
 
     private fun multipleDayEvents(list: MutableList<Event>): MutableList<Event> {

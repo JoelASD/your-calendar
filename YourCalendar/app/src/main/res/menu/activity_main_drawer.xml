@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single" >
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home_icon_24"
@@ -15,9 +15,6 @@
         <item
             android:id="@+id/nav_monthly_view"
             android:title="Monthly View" />
-        <item
-            android:id="@+id/nav_yearly_view"
-            android:title="Year View" />
         <item
             android:id="@+id/nav_new_event"
             android:icon="@drawable/ic_add_icon_24"

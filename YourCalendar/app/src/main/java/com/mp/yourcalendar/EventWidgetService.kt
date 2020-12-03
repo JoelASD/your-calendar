@@ -62,16 +62,7 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
                 putInOrder(newList)
                 //databaseLoaded(newList)
                 Log.d("DATABASE", "Users data was accessed")
-                if (newList.isEmpty()) {
-
-                }
                 events = newList
-                if(events.isEmpty()) {
-
-                   // val eventEmpty: Event = Event("No events planned for today", "","","","","No events today", 0,)
-                }
-
-
                 val appWidgetManager = context.getSystemService(AppWidgetManager::class.java)
                 appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.listView)
             }

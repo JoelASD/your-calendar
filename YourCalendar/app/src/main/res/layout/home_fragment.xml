@@ -23,21 +23,13 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp">
 
-            <!--<CalendarView
-                android:id="@+id/calendarView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_gravity="center"/>-->
-
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
                 android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="320dp"
                 app:mcv_selectionColor="#636363"
                 app:mcv_showOtherDates="all"
+                app:mcv_calendarMode="month"
                 />
 
         </FrameLayout>

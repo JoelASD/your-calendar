@@ -84,10 +84,19 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        //Look here! :D  (true at the end! )
         // Logout using drawer
         navView.menu.findItem(R.id.nav_logout).setOnMenuItemClickListener {
             logout()
+            true
+        }
+        navView.menu.findItem(R.id.nav_weekly_view).setOnMenuItemClickListener {
+            viewModel.changeCalendarView(2)
+            navView.menu.close()
+            true
+        }
+        navView.menu.findItem(R.id.nav_monthly_view).setOnMenuItemClickListener {
+            viewModel.changeCalendarView(1)
+            navView.menu.close()
             true
         }
 

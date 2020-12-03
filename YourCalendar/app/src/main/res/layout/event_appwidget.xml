@@ -10,18 +10,6 @@
     android:id="@+id/clickTextView"
     android:onClick="perform_Action">
 
-
-    <!--   <TextView
-           android:id="@+id/clickTextView"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="Open the App!"
-           android:layout_centerInParent="true"
-           android:textSize="24dp"
-           android:onClick="perform_Action"
-           android:textColor="@color/common_google_signin_btn_text_light" /> -->
-
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,10 +40,11 @@
         tools:listitem="@layout/event_widget_item"/>
 
     <TextView
-        android:id="@+id/nextDaytextView"
-        android:layout_width="match_parent"
+        android:id="@+id/empty_view"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:layout_gravity="center"
-        android:text="" />
+        android:text="Nothing planned today :)" />
 
 </LinearLayout>

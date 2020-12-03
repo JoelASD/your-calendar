@@ -46,9 +46,9 @@ class HomeFragment : Fragment() {
     ): View? {
         //homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.home_fragment, container, false)
-
         // Setup observer for eventList when view is being created
         observeDatabaseChange()
+        observeCalendarChange()
         return root
     }
 
@@ -110,21 +110,6 @@ class HomeFragment : Fragment() {
     *   That's why initCalendar() is ran at the end
      */
     fun observeDatabaseChange() {
-        /*viewModel.eventList.observe(viewLifecycleOwner, Observer { newEventList ->
-            Log.d("OBSERVER", "data changed, size: ${newEventList.size}")
-            //Log.d("LOADED", "DATABASE LOADED, ${viewModel.eventList.value}")
-            if (eventList != newEventList) {
-                eventList.clear()
-                eventList = newEventList
-                properList = createRepeatEvents(newEventList)
-
-                //Log.d("LISTAT", "eventlist: ${eventList.size}")
-                //Log.d("LISTAT", "properlist: ${properList.size}")
-            } else {
-                Log.d("LISTAT", "Lists are equal")
-            }
-            initCalendar()
-        })*/
         viewModel.properList.observe(viewLifecycleOwner, Observer { newProperList ->
             Log.d("OBSERVER", "data changed, size: ${newProperList.size}")
             if (properList != newProperList) {
@@ -140,6 +125,15 @@ class HomeFragment : Fragment() {
             initCalendar()
         })
 
+    }
+    //check, if Calendar is changed
+    fun observeCalendarChange() {
+        viewModel.calendarType.observe(viewLifecycleOwner, Observer { newViewInt ->
+            when (newViewInt) {
+                1 -> calendarView.state().edit().setCalendarDisplayMode(CalendarMode.MONTHS).commit()
+                2 -> calendarView.state().edit().setCalendarDisplayMode(CalendarMode.WEEKS).commit()
+            }
+        })
     }
 
     fun getDaysWithEvents() {
