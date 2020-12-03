@@ -68,7 +68,7 @@ class HomeFragment : Fragment() {
     // Gets list of events and runs EventsAdapter with them to show in recyclerView
     fun setupRecyclerView(events: MutableList<Event>){
         recyclerView.layoutManager = LinearLayoutManager(this.context)
-        recyclerView.adapter = EventsAdapter(this, events)
+        recyclerView.adapter = EventsAdapter(this, events, eventList)
     }
 
     /*
@@ -89,12 +89,17 @@ class HomeFragment : Fragment() {
 
     // Gets current date and runs function to set events from that date to recyclerView
     fun initCalendar(){
+        // Sets markers to calendar days when there is events
         getDaysWithEvents()
+
+        // Gets current date and runs function to set events from that date to recyclerView
         val dateParts: List<String> = LocalDate.now().toString().split("-")
         getDailyEvents("${dateParts[2]}/${dateParts[1]}/${dateParts[0]}")
     }
 
     /*
+    *   Changed a bit
+    *
     *   Observes activityViewModels eventList for changes. When changes happen, updates own eventList.
     *   But in the case of this app currently, only runs when HomeFragment is being opened. Since data in database
     *   is changed only during user being in different fragments (eg. newEventFragment or eventDetailFragment).
@@ -102,7 +107,7 @@ class HomeFragment : Fragment() {
     *   That's why initCalendar() is ran at the end
      */
     fun observeDatabaseChange() {
-        viewModel.eventList.observe(viewLifecycleOwner, Observer { newEventList ->
+        /*viewModel.eventList.observe(viewLifecycleOwner, Observer { newEventList ->
             Log.d("OBSERVER", "data changed, size: ${newEventList.size}")
             //Log.d("LOADED", "DATABASE LOADED, ${viewModel.eventList.value}")
             if (eventList != newEventList) {
@@ -116,7 +121,22 @@ class HomeFragment : Fragment() {
                 Log.d("LISTAT", "Lists are equal")
             }
             initCalendar()
+        })*/
+        viewModel.properList.observe(viewLifecycleOwner, Observer { newProperList ->
+            Log.d("OBSERVER", "data changed, size: ${newProperList.size}")
+            if (properList != newProperList) {
+                properList.clear()
+                properList = newProperList
+
+                eventList.clear()
+                eventList.addAll(viewModel.eventList)
+                Log.d("OBSERVER", "home eventlist size: ${eventList.size}")
+            } else {
+                Log.d("OBSERVER", "Lists are equal")
+            }
+            initCalendar()
         })
+
     }
 
     fun getDaysWithEvents() {
@@ -145,16 +165,19 @@ class HomeFragment : Fragment() {
         // TODO: Use the ViewModel
     }*/
 
-    fun createRepeatEvents(events: MutableList<Event>) : MutableList<Event> { //, selection: Int
+    /*fun createRepeatEvents(events: MutableList<Event>) : MutableList<Event> { //, selection: Int
 
         val list: MutableList<Event> = mutableListOf()
 
         for (e in events) {
-            val sParts: List<String> = e.eventStartDate.split("/")
-            val eParts: List<String> = e.eventEndDate.split("/")
+            //val sParts: List<String> = e.eventStartDate.split("/")
+            //val eParts: List<String> = e.eventEndDate.split("/")
             val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-            val sDate: LocalDate = LocalDate.parse("${sParts[0]}/${sParts[1]}/${sParts[2]}", formatter)
-            val eDate: LocalDate = LocalDate.parse("${eParts[0]}/${eParts[1]}/${eParts[2]}", formatter)
+            //val sDate: LocalDate = LocalDate.parse("${sParts[0]}/${sParts[1]}/${sParts[2]}", formatter)
+            //val eDate: LocalDate = LocalDate.parse("${eParts[0]}/${eParts[1]}/${eParts[2]}", formatter)
+            val sDate: LocalDate = LocalDate.parse("${e.eventStartDate}", formatter)
+            val eDate: LocalDate = LocalDate.parse("${e.eventEndDate}", formatter)
+            Log.d("datetime", "$sDate, $eDate")
             // 0=no repeat, 1=everyday, 2=every weekday, 3=weekly, 4=monthly, 5=yearly
             when(e.eventRepeat) {
                 0 -> {
@@ -211,79 +234,9 @@ class HomeFragment : Fragment() {
             }
         }
         return list
-    }
-
-    /*fun createRepeatEvents(event: Event){ //, selection: Int
-        val sParts: List<String> = event.eventStartDate.split("/")
-        val eParts: List<String> = event.eventEndDate.split("/")
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        val sDate: LocalDate = LocalDate.parse("${sParts[0]}/${sParts[1]}/${sParts[2]}", formatter)
-        val eDate: LocalDate = LocalDate.parse("${eParts[0]}/${eParts[1]}/${eParts[2]}", formatter)
-        // 0=no repeat, 1=everyday, 2=every weekday, 3=weekly, 4=monthly, 5=yearly
-        when(event.eventRepeat){
-            0 -> {
-                Log.d("REPEAT", "NO Repeat found")
-                //properList.add(event.copy())
-            }
-            1 -> {
-                Log.d("REPEAT", "NO Repeat found")
-                //properList.add(event.copy())
-            }
-            2 -> {
-                Log.d("REPEAT", "NO Repeat found")
-                //properList.add(event.copy())
-            }
-            3 -> {
-                //Plus week for startDate and endDate
-                //val newSD: LocalDate = plus(Duration.ofDays(7), sDate)
-                val newSD: LocalDate = sDate.plusWeeks(1)
-                //val newED: LocalDate = plus(Duration.ofDays(7), eDate)
-                val newED: LocalDate = eDate.plusWeeks(1)
-                // Get new date and time
-                val newStartDate: String = parseAndSetNewDT(newSD)
-                val newEndDate: String = parseAndSetNewDT(newED)
-                Log.d("TIMES", "$newStartDate $newEndDate / ${event.eventStartDate} ${event.eventEndDate}")
-                // Create a new Event with new startDate and Add it to the list
-                var newE = event
-                newE.eventStartDate = newStartDate
-                newE.eventEndDate = newEndDate
-                //return newE
-                properList.add(event.copy(eventStartDate = newStartDate, eventEndDate = newEndDate))
-            }
-            4 -> {
-                // Plus month for startDate and endDate
-                val newSD: LocalDate = sDate.plusMonths(1)
-                val newED: LocalDate = eDate.plusMonths(1)
-                // Get new date and time
-                val newStartDate: String = parseAndSetNewDT(newSD)
-                val newEndDate: String = parseAndSetNewDT(newED)
-                Log.d("TIMES", "$newStartDate $newEndDate / ${event.eventStartDate} ${event.eventEndDate}")
-                // Add them to the list as new EventNotification instances
-                var newE = event
-                newE.eventStartDate = newStartDate
-                newE.eventEndDate = newEndDate
-                properList.add(event.copy(eventStartDate = newStartDate, eventEndDate = newEndDate))
-                //return newE
-                //properList.add(newE)
-            }
-            5 -> {
-                // Plus year for startDate and endDate
-                val newSD: LocalDate = sDate.plusYears(1)
-                val newED: LocalDate = eDate.plusYears(1)
-                // Get new date and time
-                val newStartDate: String = parseAndSetNewDT(newSD)
-                val newEndDate: String = parseAndSetNewDT(newED)
-                Log.d("TIMES", "$newStartDate $newEndDate / ${event.eventStartDate} ${event.eventEndDate}")
-                // Add them to the list as new EventNotification instances
-                var newE = event
-                newE.eventStartDate = newStartDate
-                newE.eventEndDate = newEndDate
-                properList.add(event.copy(eventStartDate = newStartDate, eventEndDate = newEndDate))
-                //return newE
-                //properList.add(newE)
-            }
-        }
     }*/
+
+
 
     // Minus the amount time from start time/date
     fun plus(amount: TemporalAmount, dt: LocalDate): LocalDate {

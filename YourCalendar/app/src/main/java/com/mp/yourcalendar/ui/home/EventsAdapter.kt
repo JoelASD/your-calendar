@@ -16,10 +16,15 @@ import com.mp.yourcalendar.R
 import com.mp.yourcalendar.ui.newevent.NewEventFragmentDirections
 import kotlinx.android.synthetic.main.event_item.view.*
 
-class EventsAdapter(private val parentFragment: HomeFragment, events: MutableList<Event>) : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
+class EventsAdapter(private val parentFragment: HomeFragment, allEvents: MutableList<Event>, originalEvents: MutableList<Event>) : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
     private val onClickListener: View.OnClickListener
 
-    private val eventit: MutableList<Event> = events
+    //private val eventit: MutableList<Event> = events
+
+    // properList from home fragment (all events)
+    private val events: MutableList<Event> = allEvents
+    // eventList from home fragment (only original events)
+    private val oEvents: MutableList<Event> = originalEvents
 
     companion object {
         var position: Int = 0
@@ -29,10 +34,15 @@ class EventsAdapter(private val parentFragment: HomeFragment, events: MutableLis
         onClickListener = View.OnClickListener { v ->
             position = v.tag as Int
 
-            val dEvent: Event = eventit[position]
+            /*val dEvent: Event = events[position]
             Log.d("Event", "${dEvent.eventName}")
+            Log.d("Event", "${dEvent.eventKey}")*/
 
-            val action: NavDirections = HomeFragmentDirections.actionNavHomeToEventDetailFragment(dEvent)
+            // From the list with only original events, find event that matches eventKey with event from properList
+            val dEvent: Event? = oEvents.find { it.eventKey == events[position].eventKey }
+
+
+            val action: NavDirections = HomeFragmentDirections.actionNavHomeToEventDetailFragment(dEvent!!)
             parentFragment.findNavController().navigate(action)
         }
     }
@@ -43,7 +53,7 @@ class EventsAdapter(private val parentFragment: HomeFragment, events: MutableLis
         return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int = eventit.size
+    override fun getItemCount(): Int = events.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val nameTextView: TextView = view.itemNameTextView
@@ -52,7 +62,7 @@ class EventsAdapter(private val parentFragment: HomeFragment, events: MutableLis
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val e: Event = eventit.get(position)
+        val e: Event = events.get(position)
         //name
         holder.nameTextView.text = e.eventName
         //startdatetime

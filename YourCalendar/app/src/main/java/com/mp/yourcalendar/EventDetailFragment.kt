@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.android.volley.Request
 import com.android.volley.Response
@@ -24,6 +26,12 @@ import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
+import com.mp.yourcalendar.ui.newevent.NewEventFragmentDirections
 import kotlinx.android.synthetic.main.fragment_event_detail.*
 import kotlinx.android.synthetic.main.new_event_fragment.*
 import org.json.JSONObject
@@ -108,6 +116,12 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
                 loadWeatherForecast(locParts[0], locParts[1])
             }
         }
+
+        // Delete button
+        deleteEventButton.setOnClickListener {
+            deleteEvent(args.currentEvent.eventKey!!)
+
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -184,12 +198,36 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
     }
 
     fun addNotificationViews(){
-        for (item in args.currentEvent.eventNotificationList){
-            val notificationView = layoutInflater.inflate(R.layout.row_notification_detail, null, false)
-            val notifDateTimeText: TextView = notificationView.findViewById(R.id.notificationDateTimeTextView)
-            notifDateTimeText.text = "${item.date} - ${item.time}"
+        if (args.currentEvent.eventNotificationList.size > 0) {
+            for (item in args.currentEvent.eventNotificationList){
+                val notificationView = layoutInflater.inflate(R.layout.row_notification_detail, null, false)
+                val notifDateTimeText: TextView = notificationView.findViewById(R.id.notificationDateTimeTextView)
+                notifDateTimeText.text = "${item.date} - ${item.time}"
 
-            notifList.addView(notificationView)
+                notifList.addView(notificationView)
+            }
+        } else {
+            detailNotifications.visibility = View.GONE
+        }
+
+    }
+
+    private fun deleteEvent(key: String) {
+        val UID = Firebase.auth.uid
+        if (UID != null) {
+            FirebaseDatabase.getInstance().getReference()
+                    .child("users")
+                    .child(UID).child(key)
+                    .removeValue()
+                    .addOnCompleteListener{
+                        if(it.isComplete){
+                            Toast.makeText(context, "Event was removed!", Toast.LENGTH_SHORT).show()
+                            val action: NavDirections = EventDetailFragmentDirections.actionEventDetailToNavHome()
+                            findNavController().navigate(action)
+                        }
+                    }
+        } else {
+            Log.d("DELETE_EVENT", "UID NOT FOUND")
         }
     }
 

@@ -66,15 +66,17 @@ class MainActivity : AppCompatActivity() {
         // Listener for users data, runs at activity created and when data is changed
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val newList: MutableList<Event> = mutableListOf()
+                val newEventList: MutableList<Event> = mutableListOf()
+                val newKeyList: MutableList<String> = mutableListOf()
                 for (e in snapshot.children) {
-                    val event = e.getValue<Event>()
-                    newList.add(event!!)
+                    newKeyList.add(e.key!!)
+                    var event = e.getValue<Event>()
+                    event?.eventKey = e.key
+                    newEventList.add(event!!)
                 }
-                //databaseLoaded(newList)
                 Log.d("DATABASE", "Users data was accessed")
                 // Update eventList in activityViewModel
-                viewModel.setEventList(newList)
+                viewModel.setEventList(newEventList, newKeyList)
             }
 
             override fun onCancelled(error: DatabaseError) {
