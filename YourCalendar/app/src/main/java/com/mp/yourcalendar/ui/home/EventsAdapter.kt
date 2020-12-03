@@ -1,6 +1,8 @@
 package com.mp.yourcalendar.ui.home
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +17,7 @@ import com.mp.yourcalendar.Event
 import com.mp.yourcalendar.R
 import com.mp.yourcalendar.ui.newevent.NewEventFragmentDirections
 import kotlinx.android.synthetic.main.event_item.view.*
+import org.w3c.dom.Text
 
 class EventsAdapter(private val parentFragment: HomeFragment, allEvents: MutableList<Event>, originalEvents: MutableList<Event>) : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
     private val onClickListener: View.OnClickListener
@@ -58,6 +61,8 @@ class EventsAdapter(private val parentFragment: HomeFragment, allEvents: Mutable
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val nameTextView: TextView = view.itemNameTextView
         val startDateTimeText: TextView = view.itemTimeTextView
+        val colorTextView: TextView = view.colortextView
+
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -67,6 +72,21 @@ class EventsAdapter(private val parentFragment: HomeFragment, allEvents: Mutable
         holder.nameTextView.text = e.eventName
         //startdatetime
         holder.startDateTimeText.text = "${e.eventStartTime} - ${e.eventEndTime}"
+        //color of the event
+        //rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_blue)
+        val drawable = holder.colorTextView.background as GradientDrawable
+        Log.d("EventsAdapter", drawable.toString())
+        when (e.eventType) {
+            0 -> drawable.setColor(Color.BLUE) //holder.colorTextView.setBackgroundResource(R.drawable.box_blue)
+            1 -> holder.colorTextView.setBackgroundResource(R.drawable.box_green)
+            2 -> drawable.setColor(Color.RED) //holder.colorTextView.setBackgroundResource(R.drawable.box_red)
+            3 -> holder.colorTextView.setBackgroundResource(R.drawable.box_yellow)
+            4 -> holder.colorTextView.setBackgroundResource(R.drawable.box_pink)
+            5 -> holder.colorTextView.setBackgroundResource(R.drawable.box_purple)
+            6 -> holder.colorTextView.setBackgroundResource(R.drawable.box_brown)
+            else -> holder.colorTextView.setBackgroundResource(R.color.black)
+        }
+
 
         // Onclicklistener for viewholders
         with(holder.itemView) {

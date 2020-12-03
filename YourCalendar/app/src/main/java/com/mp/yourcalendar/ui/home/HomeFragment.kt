@@ -1,5 +1,6 @@
 package com.mp.yourcalendar.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,7 +13,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mp.yourcalendar.Event
 import com.mp.yourcalendar.EventNotification
+import com.mp.yourcalendar.MainActivity
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import kotlinx.android.synthetic.main.event_appwidget.*
 import kotlinx.android.synthetic.main.event_list.*
 import kotlinx.android.synthetic.main.home_fragment.*
 import java.time.Duration
@@ -20,6 +23,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAmount
+import java.util.*
 
 
 class HomeFragment : Fragment() {
@@ -44,7 +48,6 @@ class HomeFragment : Fragment() {
 
         // Setup observer for eventList when view is being created
         observeDatabaseChange()
-
         return root
     }
 
@@ -250,5 +253,4 @@ class HomeFragment : Fragment() {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         return dt.format(formatter).toString()
     }
-
 }

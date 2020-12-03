@@ -25,6 +25,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.mp.yourcalendar.Event
 import com.mp.yourcalendar.R
+import kotlinx.android.synthetic.main.event_appwidget.*
 import kotlinx.android.synthetic.main.new_event_fragment.*
 import java.text.DateFormat
 import java.time.Duration
@@ -204,7 +205,6 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
         newEventViewModel.hour = hourOfDay
         newEventViewModel.minute = minute
-
         runUpdate(button)
     }
 

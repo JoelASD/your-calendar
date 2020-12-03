@@ -29,6 +29,9 @@
         <item>Brown</item>
     </string-array>
 
+    //event Button
+    <string name="newEventButton" >Create new event</string>
+
     <string-array name="repeat_array">
         <item>No repeat</item>
         <item>Every day</item>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/linearLayoutWidgetList"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+xmlns:tools="http://schemas.android.com/tools"
+android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/noUserTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please log in, to use the service"
+        android:lines="2"
+        android:maxLines="4"/>
+
+</LinearLayout>
+

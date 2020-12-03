@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        //Look here! :D  (true at the end! )
         // Logout using drawer
         navView.menu.findItem(R.id.nav_logout).setOnMenuItemClickListener {
             logout()
