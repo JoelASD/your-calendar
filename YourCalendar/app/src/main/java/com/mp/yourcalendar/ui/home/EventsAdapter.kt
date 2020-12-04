@@ -71,7 +71,11 @@ class EventsAdapter(private val parentFragment: HomeFragment, allEvents: Mutable
         //name
         holder.nameTextView.text = e.eventName
         //startdatetime
-        holder.startDateTimeText.text = "${e.eventStartTime} - ${e.eventEndTime}"
+        //holder.startDateTimeText.text = "${e.eventStartTime} - ${e.eventEndTime}"
+        //startdatetime, if multi day event, show first day end time 23:59
+        holder.startDateTimeText.text =
+                if (e.eventStartDate != e.eventEndDate) "${e.eventStartTime} - 23:59"
+                else "${e.eventStartTime} - ${e.eventEndTime}"
         //color of the event
         //rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_blue)
         val drawable = holder.colorTextView.background as GradientDrawable

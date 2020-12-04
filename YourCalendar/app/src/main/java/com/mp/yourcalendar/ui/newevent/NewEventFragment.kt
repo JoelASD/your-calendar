@@ -184,8 +184,8 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
                     else newEventViewModel.createEvent(newEventNameEditText.text.trim().toString(), newEventDescriptionEditText.text.trim().toString())
 
                 newEventViewModel.saveEvent(newEvent)
-                val action: NavDirections = NewEventFragmentDirections.actionNavNewEventToEventDetail(newEvent)
-                findNavController().navigate(action)
+                //val action: NavDirections = NewEventFragmentDirections.actionNavNewEventToEventDetail(newEvent)
+                //findNavController().navigate(action)
                 //findNavController().navigate(R.id.action_nav_new_event_to_event_detail)
             } else {
                 newEventNameEditText.requestFocus()
@@ -270,7 +270,6 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
     }
 
     fun removeNotificationView(view: View){
-        //notificationLayoutList.removeView(view)
         notificationList.removeView(view)
     }
 

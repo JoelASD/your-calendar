@@ -94,8 +94,8 @@ class activityViewModel(application: Application): AndroidViewModel(application)
                 val newStartDate: String = parseAndSetNewDT(newSD)
                 val finalDay = e.copy(eventStartDate = newStartDate, eventStartTime = newStartTime, eventEndDate = newStartDate)
                 modifiedList.add(finalDay)
-                // Modify starting date endtime
-                e.eventEndTime = newEndTime
+                // Modify starting date endtime CHANGED SO THIS IS HANDLED IN EVENTSADAPTER
+                //e.eventEndTime = newEndTime
                 //Log.d("MULTIPLEDAYS", "${e.eventEndDate}")
             }
         }

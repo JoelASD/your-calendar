@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
@@ -47,6 +48,7 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
     private val args: EventDetailFragmentArgs by navArgs<EventDetailFragmentArgs>()
 
     private lateinit var gMap: GoogleMap
+    private lateinit var gMapView: MapView
 
     // Weather
     private lateinit var locTemperature: String
@@ -110,6 +112,7 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
                 mapView.onCreate(null)
                 mapView.onResume()
                 mapView.getMapAsync(this)
+
             }
             val locParts: List<String>? = args.currentEvent.eventLocLatLng?.split(" ")
             if (locParts != null) {

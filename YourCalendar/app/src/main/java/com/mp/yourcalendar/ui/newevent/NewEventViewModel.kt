@@ -3,12 +3,16 @@ package com.mp.yourcalendar.ui.newevent
 import android.location.Address
 import android.location.Geocoder
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.mp.yourcalendar.Event
+import com.mp.yourcalendar.EventEditFragmentDirections
 import com.mp.yourcalendar.EventNotification
 import java.time.Duration
 import java.time.LocalDate
@@ -217,7 +221,7 @@ class NewEventViewModel : ViewModel() {
                 val newDT: LocalDateTime = minus(Duration.ofMinutes(5, ), dt)
                 // Get new date and time
                 val newParts: List<String> = parseAndSetNewDT(newDT)
-                // Add them to the list as new EventNotification instances
+                // Add them to the list as new EventNotification instance
                 notificationList.add(EventNotification(newParts[0], newParts[1], 1))
             }
             2 -> {
@@ -296,7 +300,7 @@ class NewEventViewModel : ViewModel() {
     }
 
     fun createEvent(name: String, desc: String?): Event{
-        val event = Event(name, startDate, startTime, endDate, endTime, desc, eventType, eventRepeat, eventLocation, eventLatLng, notificationList)
+        val event = Event(name, startDate, startTime, endDate, endTime, desc, eventType, eventRepeat, eventLocation, eventLatLng, notificationList, null)
         return event
     }
 
@@ -317,6 +321,14 @@ class NewEventViewModel : ViewModel() {
         val userUID = Firebase.auth.uid
         if (userUID != null){
             database.child("users").child(userUID).push().setValue(event)
+                    /*.addOnSuccessListener {
+                        //Toast.makeText(, "Event saved!", Toast.LENGTH_SHORT).show()
+                        //val action: NavDirections = EventEditFragmentDirections.actionEventEditToNavHome()
+                        //findNavController().navigate(action)
+                    }
+                    .addOnFailureListener {
+                        //Toast.makeText(context, "Event couldn't be saved.. $it", Toast.LENGTH_SHORT).show()
+                    }*/
         } else {
             Log.d("USER_ERROR", "Couldnt find user!")
         }

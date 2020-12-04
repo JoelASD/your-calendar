@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_nav_new_event_to_event_detail"
             app:destination="@+id/eventDetailFragment" />
+        <action
+            android:id="@+id/action_nav_new_event_to_nav_home"
+            app:destination="@id/nav_home" />
 
     </fragment>
 
@@ -53,6 +56,9 @@
         <argument
             android:name="currentEvent"
             app:argType="com.mp.yourcalendar.Event" />
+        <action
+            android:id="@+id/action_event_edit_to_nav_home"
+            app:destination="@id/nav_home" />
     </fragment>
 
 </navigation>

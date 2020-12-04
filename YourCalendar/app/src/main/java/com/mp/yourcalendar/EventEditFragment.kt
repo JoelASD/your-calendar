@@ -2,16 +2,29 @@ package com.mp.yourcalendar
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.location.Address
+import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.view.iterator
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.mp.yourcalendar.ui.newevent.NewEventFragmentDirections
 import kotlinx.android.synthetic.main.fragment_event_edit.*
 import kotlinx.android.synthetic.main.new_event_fragment.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -20,10 +33,22 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     //private args: EventEditFragmentArgs by navArgs<Event
     private val args: EventEditFragmentArgs by navArgs<EventEditFragmentArgs>()
 
+    // Original event
     private lateinit var currentEvent: Event
+    // Edits go to this event
     private lateinit var editedEvent: Event
 
+    // Helper for date and time pickers
     var button: Int = 1
+
+    // db reference
+    val database: DatabaseReference = Firebase.database.reference
+
+    // Location
+    private lateinit var geocoder: Geocoder
+    private lateinit var geoList: MutableList<Address>
+
+    // Notification list
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +63,9 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         editedEvent = args.currentEvent
         // Initialize view with current events information
         setEventDetails()
+
+
+
     }
 
     private fun setEventDetails() {
@@ -58,13 +86,17 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
         // Location (text)
         editEventLocationEditText.setText(currentEvent.eventLocName)
+        initGeoLoc()
 
         // Notifications
         initNotificationViews(currentEvent.eventNotificationList)
+        editEventAddNotificationButton.setOnClickListener {
+            addNotificationView()
+        }
 
         // Save button
         editEventSaveButton.setOnClickListener {
-            //TODO: check if changes, save to db
+            saveEvent()
         }
 
     }
@@ -74,7 +106,7 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         editEventStartDateButton.text = currentEvent.eventStartDate
         editEventStartDateButton.setOnClickListener {
             val dParts: List<String> = editedEvent.eventStartDate.split("/")
-            DatePickerDialog(requireContext(), this, dParts[2].toInt(), dParts[1].toInt(), dParts[0].toInt()).show() // year, month, day
+            DatePickerDialog(requireContext(), this, dParts[2].toInt(), dParts[1].toInt()-1, dParts[0].toInt()).show() // year, month, day
             button = 1
         }
 
@@ -90,7 +122,7 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         editEventEndDateButton.text = currentEvent.eventEndDate
         editEventEndDateButton.setOnClickListener {
             val dParts: List<String> = editedEvent.eventEndDate.split("/")
-            DatePickerDialog(requireContext(), this, dParts[2].toInt(), dParts[1].toInt(), dParts[0].toInt()).show()
+            DatePickerDialog(requireContext(), this, dParts[2].toInt(), dParts[1].toInt()-1, dParts[0].toInt()).show()
             button = 2
         }
 
@@ -121,10 +153,11 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     // Set the chosen items id to eventType
                     //newEventViewModel.eventType = editEventTypeSpinner.adapter.getItemId(position).toInt()
+                    editedEvent.eventType = position
+                    Log.d("REPEATSPINNER", "${editedEvent.eventType}")
                 }
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-                    // Use the first item if nothing is selected by user
-                    //newEventViewModel.eventType = 0
+
                 }
             }
         }
@@ -146,11 +179,11 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     // Set the chosen items id to eventRepeat variable
-                    //newEventViewModel.eventRepeat = newEventRepeatSpinner.adapter.getItemId(position).toInt()
+                    editedEvent.eventRepeat = position
+                    Log.d("REPEATSPINNER", "${editedEvent.eventRepeat}")
                 }
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-                    // Use first option if nothing selected
-                    //newEventViewModel.eventRepeat = 0
+
                 }
             }
         }
@@ -175,26 +208,96 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             // Remove row button
             val removeNotificationButton: Button = notificationView.findViewById(R.id.notifRemoveButton)
             removeNotificationButton.setOnClickListener {
-                //removeNotificationView(notificationView)
+                removeNotificationView(notificationView)
             }
             // Set new row view to page
             editNotificationList.addView(notificationView)
         }
     }
 
-    override fun onDateSet(p0: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        /*newEventViewModel.day = dayOfMonth
-        newEventViewModel.month = month+1
-        newEventViewModel.year = year
+    private fun addNotificationView() {
+        val notificationView = layoutInflater.inflate(R.layout.row_add_notification, null, false)
+        // Spinner in the new row
+        val notificationSpinner: Spinner = notificationView.findViewById(R.id.notifSpinner)
+        ArrayAdapter.createFromResource(
+                requireActivity(),
+                R.array.notification_array,
+                android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            notificationSpinner.adapter = adapter
+        }
+        // Remove row button
+        val removeNotificationButton: Button = notificationView.findViewById(R.id.notifRemoveButton)
+        removeNotificationButton.setOnClickListener {
+            removeNotificationView(notificationView)
+        }
+        // Set new row view to page
+        editNotificationList.addView(notificationView)
+    }
 
-        runUpdate(button)*/
-        updateDates(button, dayOfMonth, month, year)
+    private fun removeNotificationView(view: View){
+        editNotificationList.removeView(view)
+    }
+
+    private fun validateNotifications(){
+        // Clear notification list in case there is something left
+        //newEventViewModel.notificationList.clear()
+
+        val list: MutableList<Int> = mutableListOf()
+
+        //TODO: make sure no duplicate notifications
+        // Go through notificationLayoutList and make new notification
+        for (item in editNotificationList) {
+            val spinner = item.findViewById<Spinner>(R.id.notifSpinner)
+            //val selectedNotificationTime = spinner.selectedItemPosition
+            list.add(spinner.selectedItemPosition)
+            //newEventViewModel.setNotificationDateTime(selectedNotificationTime)
+        }
+        createNotifications(list.distinct())
+    }
+
+    private fun createNotifications(list: List<Int>) {
+        editedEvent.eventNotificationList.clear()
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+        val dParts: List<String> = editedEvent.eventStartDate.split("/")
+        val tParts: List<String> = editedEvent.eventStartTime.split(":")
+        val dt: LocalDateTime = LocalDateTime.parse("${dParts[0]}/${dParts[1]}/${dParts[2]} ${tParts[0]}:${tParts[1]}", formatter)
+        for (i in list) {
+            // 0=at start, 1=5m, 2=10m, 3=15m, 4=30m, 5=1h, 6=2h, 7=1d, 8=1w, 9=at end
+            when (i) {
+                0 -> editedEvent.eventNotificationList.add(EventNotification(editedEvent.eventStartDate, editedEvent.eventStartTime, 0))
+                1 -> addNotifToCollection(dt.minusMinutes(5), 1)
+                2 -> addNotifToCollection(dt.minusMinutes(10), 2)
+                3 -> addNotifToCollection(dt.minusMinutes(15), 3)
+                4 -> addNotifToCollection(dt.minusMinutes(30), 4)
+                5 -> addNotifToCollection(dt.minusHours(1), 5)
+                6 -> addNotifToCollection(dt.minusHours(2), 6)
+                7 -> addNotifToCollection(dt.minusDays(1), 7)
+                8 -> addNotifToCollection(dt.minusWeeks(1), 8)
+                9 -> editedEvent.eventNotificationList.add(EventNotification(editedEvent.eventEndDate, editedEvent.eventEndTime, 9))
+            }
+        }
+    }
+
+    private fun parseAndSetNewDT(dt: LocalDateTime): List<String> {
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+        val formatted = dt.format(formatter)
+        return formatted.split(" ")
+    }
+
+    private fun addNotifToCollection(dt: LocalDateTime, i: Int) {
+        // Parse new date and time
+        val dtParts: List<String> = parseAndSetNewDT(dt)
+        // Add them to the list as new EventNotification instance
+        editedEvent.eventNotificationList.add(EventNotification(dtParts[0], dtParts[1], i))
+    }
+
+    override fun onDateSet(p0: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        updateDates(button, dayOfMonth, month+1, year)
     }
 
     override fun onTimeSet(p0: TimePicker?, hourOfDay: Int, minute: Int) {
-        /*newEventViewModel.hour = hourOfDay
-        newEventViewModel.minute = minute
-        runUpdate(button)*/
         updateTimes(button, hourOfDay, minute)
     }
 
@@ -291,6 +394,110 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         else if (hour > 10 && minute < 10) "$hour:0$minute".format(formatter)
         else "$hour:$minute".format(formatter)
 
+    }
+
+    // Init geocoder and location
+    private fun initGeoLoc() {
+        // Geocoder
+        geocoder = Geocoder(this.context)
+        // On location change
+        editEventLocationEditText.setOnKeyListener { view, keyCode, keyEvent ->
+            when{
+                (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN) -> {
+                    if (editEventLocationEditText.text.trim().isNotEmpty()) {
+                        getLocation(editEventLocationEditText.text.trim().toString())
+                    } else  {
+                        editedEvent.eventLocName = null
+                        editedEvent.eventLocLatLng = null
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun getLocation(loc: String) {
+        geoList = geocoder.getFromLocationName(loc, 5)
+
+        when (geoList.size) {
+            0 -> {
+                // set to null?
+                //newEventViewModel.eventLocation = null
+                //newEventViewModel.eventLatLng = null
+            }
+            1 -> selectLocation(geoList[0].getAddressLine(0), "${geoList[0].latitude} ${geoList[0].longitude}")
+            else -> {
+                editChooseLocationTextView.visibility = View.VISIBLE
+                for (item in geoList) {
+                    addLocationView(item)
+                }
+            }
+        }
+    }
+
+    // Select address to use
+    private fun selectLocation(loc: String, latlng: String){
+        editedEvent.eventLocName = loc
+        editedEvent.eventLocLatLng = latlng
+
+        //geolocationList.removeAllViews()
+        editGeolocationList.removeAllViews()
+        //chooseLocationTextView.visibility = View.GONE
+        editChooseLocationTextView.visibility = View.GONE
+
+        editEventLocationEditText.setText(loc)
+        Log.d("LOCATION", "${editedEvent.eventLocName}, ${editedEvent.eventLocLatLng}")
+    }
+
+    // If multiple search result, show them in linearlayout
+    private fun addLocationView(address: Address){
+        // Get a new row view
+        val locationView = layoutInflater.inflate(R.layout.row_location, null, false)
+
+        // Rows textView
+        val locationTextView: TextView = locationView.findViewById(R.id.rowLocationTextView)
+        val locationString: String = address.getAddressLine(0)
+        val locationLatLng = "${address.latitude} ${address.longitude}"
+        locationTextView.text = address.getAddressLine(0)
+
+        locationTextView.setOnClickListener {
+            selectLocation(locationString, locationLatLng)
+        }
+
+        editGeolocationList.addView(locationView)
+    }
+
+    private fun saveEvent() {
+        val name = editEventNameEditText.text.trim().toString()
+        val desc =
+                if (editEventDescriptionEditText.text.trim().isNotEmpty()) editEventDescriptionEditText.text.trim().toString()
+                else null
+
+        if (editEventNameEditText.text.trim().isNotEmpty()){
+            validateNotifications()
+            val newEvent = editedEvent.copy(eventName = name, eventDescription = desc, eventKey = null)
+
+            val UID = Firebase.auth.uid
+            if (UID != null){
+                database.child("users")
+                        .child(UID).child(currentEvent.eventKey!!)
+                        .setValue(newEvent)
+                        .addOnSuccessListener {
+                            Toast.makeText(context, "Event saved!", Toast.LENGTH_SHORT).show()
+                            val action: NavDirections = EventEditFragmentDirections.actionEventEditToNavHome()
+                            findNavController().navigate(action)
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(context, "Event couldn't be saved.. $it", Toast.LENGTH_SHORT).show()
+                        }
+            } else {
+                Log.d("USER_ERROR", "Couldnt find user!")
+            }
+        } else {
+            editEventNameEditText.requestFocus()
+            editEventNameEditText.error = "You must set a name for the event!"
+        }
     }
 
 }
