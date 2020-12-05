@@ -30,7 +30,7 @@ import java.time.format.DateTimeFormatter
 
 class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    //private args: EventEditFragmentArgs by navArgs<Event
+    //args = event to be edited
     private val args: EventEditFragmentArgs by navArgs<EventEditFragmentArgs>()
 
     // Original event
@@ -41,14 +41,13 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     // Helper for date and time pickers
     var button: Int = 1
 
-    // db reference
+    // DB reference
     val database: DatabaseReference = Firebase.database.reference
 
     // Location
     private lateinit var geocoder: Geocoder
     private lateinit var geoList: MutableList<Address>
 
-    // Notification list
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,13 +60,12 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         currentEvent = args.currentEvent
         editedEvent = args.currentEvent
-        // Initialize view with current events information
+
+
         setEventDetails()
-
-
-
     }
 
+    // Initialize view with current events information
     private fun setEventDetails() {
         // Name
         editEventNameEditText.setText(currentEvent.eventName)
@@ -101,6 +99,7 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
     }
 
+    // Initialize dates and times + picker dialog
     private fun initDateTimeOnClick() {
         // Start date
         editEventStartDateButton.text = currentEvent.eventStartDate
@@ -135,6 +134,7 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         }
     }
 
+    // Initialize type spinner
     private fun initTypeSpinner() {
 
         ArrayAdapter.createFromResource(
@@ -151,18 +151,14 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                 AdapterView.OnItemSelectedListener{
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    // Set the chosen items id to eventType
-                    //newEventViewModel.eventType = editEventTypeSpinner.adapter.getItemId(position).toInt()
                     editedEvent.eventType = position
-                    Log.d("REPEATSPINNER", "${editedEvent.eventType}")
                 }
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-
-                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
         }
     }
 
+    // Initialize repeat spinner
     private fun initRepeatSpinner() {
         ArrayAdapter.createFromResource(
             requireActivity(),
@@ -178,19 +174,15 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                 AdapterView.OnItemSelectedListener{
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    // Set the chosen items id to eventRepeat variable
                     editedEvent.eventRepeat = position
-                    Log.d("REPEATSPINNER", "${editedEvent.eventRepeat}")
                 }
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-
-                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
         }
     }
 
+    // Initialize already set notifications
     private fun initNotificationViews(list: MutableList<EventNotification>){
-
         for (notif in list) {
             // Get new row view
             val notificationView = layoutInflater.inflate(R.layout.row_add_notification, null, false)
@@ -208,13 +200,15 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             // Remove row button
             val removeNotificationButton: Button = notificationView.findViewById(R.id.notifRemoveButton)
             removeNotificationButton.setOnClickListener {
-                removeNotificationView(notificationView)
+                //removeNotificationView(notificationView)
+                editNotificationList.removeView(notificationView)
             }
             // Set new row view to page
             editNotificationList.addView(notificationView)
         }
     }
 
+    // Add new notification selection row
     private fun addNotificationView() {
         val notificationView = layoutInflater.inflate(R.layout.row_add_notification, null, false)
         // Spinner in the new row
@@ -230,39 +224,33 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         // Remove row button
         val removeNotificationButton: Button = notificationView.findViewById(R.id.notifRemoveButton)
         removeNotificationButton.setOnClickListener {
-            removeNotificationView(notificationView)
+            //removeNotificationView(notificationView)
+            editNotificationList.removeView(notificationView)
         }
         // Set new row view to page
         editNotificationList.addView(notificationView)
     }
 
-    private fun removeNotificationView(view: View){
-        editNotificationList.removeView(view)
-    }
-
+    // Get set notifications and validate
     private fun validateNotifications(){
-        // Clear notification list in case there is something left
-        //newEventViewModel.notificationList.clear()
-
         val list: MutableList<Int> = mutableListOf()
 
-        //TODO: make sure no duplicate notifications
-        // Go through notificationLayoutList and make new notification
+        // Loop through items in notificationList (view) and remove duplicate notifications
         for (item in editNotificationList) {
             val spinner = item.findViewById<Spinner>(R.id.notifSpinner)
-            //val selectedNotificationTime = spinner.selectedItemPosition
             list.add(spinner.selectedItemPosition)
-            //newEventViewModel.setNotificationDateTime(selectedNotificationTime)
         }
         createNotifications(list.distinct())
     }
 
+    // Create EventNotifications and proceed add them to newEvent
     private fun createNotifications(list: List<Int>) {
         editedEvent.eventNotificationList.clear()
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
         val dParts: List<String> = editedEvent.eventStartDate.split("/")
         val tParts: List<String> = editedEvent.eventStartTime.split(":")
         val dt: LocalDateTime = LocalDateTime.parse("${dParts[0]}/${dParts[1]}/${dParts[2]} ${tParts[0]}:${tParts[1]}", formatter)
+
         for (i in list) {
             // 0=at start, 1=5m, 2=10m, 3=15m, 4=30m, 5=1h, 6=2h, 7=1d, 8=1w, 9=at end
             when (i) {
@@ -280,12 +268,14 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         }
     }
 
+    // Helps to parse notifications actual time and date
     private fun parseAndSetNewDT(dt: LocalDateTime): List<String> {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
         val formatted = dt.format(formatter)
         return formatted.split(" ")
     }
 
+    // Get notifications date and time and add them to newEvents list
     private fun addNotifToCollection(dt: LocalDateTime, i: Int) {
         // Parse new date and time
         val dtParts: List<String> = parseAndSetNewDT(dt)
@@ -301,6 +291,7 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         updateTimes(button, hourOfDay, minute)
     }
 
+    // Update dates and times on screen
     private fun updateDateTimeViews() {
         editEventStartDateButton.text = editedEvent.eventStartDate
         editEventStartTimeButton.text = editedEvent.eventStartTime
@@ -308,6 +299,7 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         editEventEndTimeButton.text = editedEvent.eventEndTime
     }
 
+    // Runs after user changes start or end date
     private fun updateDates(btn: Int, day: Int, month: Int, year: Int) {
         when(btn) {
             1 -> {
@@ -318,13 +310,6 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                 // If new start date is after old end date -> set end date to match start date
                 if (LocalDate.of(year, month, day).isAfter(LocalDate.of(edp[2].toInt(), edp[1].toInt(), edp[0].toInt()))) {
                     editedEvent.eventEndDate = formatDate(day, month, year)
-
-                    // Now that dates are same, check that start time is not after endtime -> if yes, set endTime = startTime
-                    val stp: List<String> = editedEvent.eventStartTime.split(":")
-                    val etp: List<String> = editedEvent.eventEndTime.split(":")
-                    if (LocalTime.of(stp[0].toInt(), stp[1].toInt()).isAfter(LocalTime.of(etp[0].toInt(), etp[1].toInt()))) {
-                        editedEvent.eventEndTime = currentEvent.eventStartTime
-                    }
                 }
             }
             2 -> {
@@ -335,19 +320,21 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                 // If new end date is before start date -> set start date to match the end date
                 if (LocalDate.of(year, month, day).isBefore(LocalDate.of(sdp[2].toInt(), sdp[1].toInt(), sdp[0].toInt()))) {
                     editedEvent.eventStartDate = formatDate(day, month, year)
-
-                    // Now that dates are same, check that start time is not after endtime -> if yes, set endTime = startTime
-                    val stp: List<String> = editedEvent.eventStartTime.split(":")
-                    val etp: List<String> = editedEvent.eventEndTime.split(":")
-                    if (LocalTime.of(stp[0].toInt(), stp[1].toInt()).isAfter(LocalTime.of(etp[0].toInt(), etp[1].toInt()))) {
-                        editedEvent.eventEndTime = currentEvent.eventStartTime
-                    }
                 }
             }
         }
+
+        // Check, if dates are equal, that start time is not after end time. Change end time if necessary
+        val stp: List<String> = editedEvent.eventStartTime.split(":")
+        val etp: List<String> = editedEvent.eventEndTime.split(":")
+        if (editedEvent.eventStartDate == editedEvent.eventEndDate && LocalTime.of(stp[0].toInt(), stp[1].toInt()).isAfter(LocalTime.of(etp[0].toInt(), etp[1].toInt()))) {
+            editedEvent.eventEndTime = currentEvent.eventStartTime
+        }
+
         updateDateTimeViews()
     }
 
+    // Runs after user changes start or end time
     private fun updateTimes(btn: Int, hour: Int, minute: Int) {
         val startDate = currentEvent.eventStartDate
         val endDate = currentEvent.eventEndDate
@@ -376,24 +363,20 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         updateDateTimeViews()
     }
 
-    // Format new date string (that goes into view)
+    // Format date string
     private fun formatDate(day: Int, month: Int, year: Int): String{
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-
-        return if (day < 10 && month < 10) "0$day/0$month/$year".format(formatter)
-        else if (day < 10 && month > 10) "0$day/$month/$year".format(formatter)
-        else if (day > 10 && month < 10) "$day/0$month/$year".format(formatter)
-        else "$day/$month/$year".format(formatter)
+        return if (day < 10 && month < 10) "0$day/0$month/$year"
+        else if (day < 10 && month > 10) "0$day/$month/$year"
+        else if (day > 10 && month < 10) "$day/0$month/$year"
+        else "$day/$month/$year"
     }
 
+    // Format time string
     private fun formatTime(hour: Int, minute: Int): String{
-        val formatter = DateTimeFormatter.ofPattern("HH:mm")
-
-        return if (hour < 10 && minute < 10) "0$hour:0$minute".format(formatter)
-        else if (hour < 10 && minute > 10) "0$hour:$minute".format(formatter)
-        else if (hour > 10 && minute < 10) "$hour:0$minute".format(formatter)
-        else "$hour:$minute".format(formatter)
-
+        return if (hour < 10 && minute < 10) "0$hour:0$minute"
+        else if (hour < 10 && minute > 10) "0$hour:$minute"
+        else if (hour > 10 && minute < 10) "$hour:0$minute"
+        else "$hour:$minute"
     }
 
     // Init geocoder and location
@@ -417,14 +400,14 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         }
     }
 
+    // Get list of locations with geocoder
     private fun getLocation(loc: String) {
         geoList = geocoder.getFromLocationName(loc, 5)
 
         when (geoList.size) {
             0 -> {
-                // set to null?
-                //newEventViewModel.eventLocation = null
-                //newEventViewModel.eventLatLng = null
+                editedEvent.eventLocName = null
+                editedEvent.eventLocLatLng = null
             }
             1 -> selectLocation(geoList[0].getAddressLine(0), "${geoList[0].latitude} ${geoList[0].longitude}")
             else -> {
@@ -441,9 +424,7 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         editedEvent.eventLocName = loc
         editedEvent.eventLocLatLng = latlng
 
-        //geolocationList.removeAllViews()
         editGeolocationList.removeAllViews()
-        //chooseLocationTextView.visibility = View.GONE
         editChooseLocationTextView.visibility = View.GONE
 
         editEventLocationEditText.setText(loc)
@@ -468,6 +449,7 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         editGeolocationList.addView(locationView)
     }
 
+    // Finalize edited event and it to DB
     private fun saveEvent() {
         val name = editEventNameEditText.text.trim().toString()
         val desc =

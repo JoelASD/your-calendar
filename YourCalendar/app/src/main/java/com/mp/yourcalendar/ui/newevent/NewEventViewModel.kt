@@ -4,6 +4,8 @@ import android.location.Address
 import android.location.Geocoder
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
@@ -65,6 +67,78 @@ class NewEventViewModel : ViewModel() {
     var endYear = 0
     var endHour = 0
     var endMinute = 0
+
+
+    var initialized: Boolean = false
+
+    private val _sDate = MutableLiveData<String>()
+    fun sDate(): LiveData<String> { return _sDate }
+
+    private val _sTime = MutableLiveData<String>()
+    fun sTime(): LiveData<String> { return _sTime }
+
+    private val _eDate = MutableLiveData<String>()
+    fun eDate(): LiveData<String> { return _eDate }
+
+    private val _eTime = MutableLiveData<String>()
+    fun eTime(): LiveData<String> { return _eTime }
+
+    private val _type = MutableLiveData<Int>()
+    fun type(): LiveData<Int> { return _type }
+
+    private val _repeat = MutableLiveData<Int>()
+    fun repeat(): LiveData<Int> { return _repeat }
+
+    private val _loc = MutableLiveData<String>()
+    fun loc(): LiveData<String> { return _loc }
+
+    private val _locLatLng = MutableLiveData<String>()
+    fun locLatLng(): LiveData<String> { return _locLatLng }
+
+    private val _notifs = MutableLiveData<MutableList<EventNotification>>()
+
+    var state = 0
+
+    val uusiEventti: MutableLiveData<Event> = MutableLiveData()
+    //var eventti: Event = Event()
+
+    fun initNewEvent() {
+        uusiEventti.value = Event()
+
+        // Init dates and times
+        val sdtParts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")).split(" ")
+        val edtParts = LocalDateTime.now().plusHours(1).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")).split(" ")
+        /*sDate.value = sdtParts[0]
+        sTime.value = sdtParts[1]
+        eDate.value = edtParts[0]
+        eTime.value = edtParts[1]
+        type.value = 0
+        repeat.value = 0*/
+
+        initialized = true
+    }
+
+    // Format new date and set it POSSIBLY RIGHT?
+    /*fun formatDate(day: Int, month: Int, year: Int): String{
+        return if (day < 10 && month < 10) "0$day/0$month/$year"
+        else if (day < 10 && month > 10) "0$day/$month/$year"
+        else if (day > 10 && month < 10) "$day/0$month/$year"
+        else "$day/$month/$year"
+    }
+
+    fun formatTime(hour: Int, minute: Int): String{
+        return if (hour < 10 && minute < 10) "0$hour:0$minute"
+        else if (hour < 10 && minute > 10) "0$hour:$minute"
+        else if (hour > 10 && minute < 10) "$hour:0$minute"
+        else "$hour:$minute"
+
+    }*/
+
+
+
+
+
+
 
     // Function to initialize dates and times when fragment is opened
     fun initDateTimePicker(){

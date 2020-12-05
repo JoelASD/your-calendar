@@ -18,8 +18,4 @@ data class Event (
         var eventLocLatLng: String? = "",
         val eventNotificationList: MutableList<EventNotification> = mutableListOf(),
         var eventKey: String? = ""
-) : Parcelable {
-    /*constructor() : this("", "", "", "",
-            "", "", 0, 0,
-            "", "", emptyList<EventNotification>() as MutableList<EventNotification>)*/
-}
+) : Parcelable {}

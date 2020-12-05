@@ -14,22 +14,13 @@ import javax.xml.datatype.DatatypeConstants.DAYS
 
 /*
 *
-*   I chose to run realtime database's valueEventListener in mainActivity rather than in homeFragment.
-*   so it doesn't run every time user enters homeFragment again (if no data was changed).
-*
-*   This viewModel is set up so that MainActivity owns it and HomeFragment retrieves it from memory.
-*   When valueEventListener in MainActivity catches change in database, it updates this eventList with setEventList()
-*   and observer in HomeFragment triggers.
+*   This viewModel is owned by main activity.
+*   Contains events and calendar mode liveData that home fragment uses.
 *
  */
 
 class activityViewModel(application: Application): AndroidViewModel(application) {
-    /*val eventList = MutableLiveData<MutableList<Event>>()
 
-    fun setEventList(list: MutableList<Event>){
-        eventList.value = list
-        Log.d("VIEWMODEL", "eventlist updated ${eventList.value}")
-    }*/
     // List of events from database, no repeats or multi days created
     // Used when needed the original created event
     val eventList: MutableList<Event> = mutableListOf()
@@ -41,13 +32,11 @@ class activityViewModel(application: Application): AndroidViewModel(application)
     // Helps creating properlist, TODO: change to run all in order from functions?
     private val helperList: MutableList<Event> = mutableListOf()
 
-    val withMultipleDaysList: MutableList<Event> = mutableListOf()
-
+    // Week / month view
     val calendarType = MutableLiveData<Int>()
 
+    // Gets data from DB, set it to lists
     fun setEventList(eList: MutableList<Event>, kList: MutableList<String>) {
-        //eventList.value = list
-        //TODO: Find proper way
         eventList.clear()
         eventList.addAll(eList)
 
@@ -55,13 +44,21 @@ class activityViewModel(application: Application): AndroidViewModel(application)
         helperList.addAll(eList)
         helperList.addAll(multipleDayEvents(eList))
         properList.value = addRepeats(helperList)
-        //Log.d("VIEWMODEL", "eventlist updated ${properList.value}")
-    }
-    fun changeCalendarView(statusInt : Int) {
-        calendarType.value = statusInt
-        Log.d("change", "$statusInt")
     }
 
+    // When calendar view is wanted to be changed
+    fun changeCalendarView(statusInt : Int) { calendarType.value = statusInt }
+
+    /*
+    *
+    * Loops through list and creates "new events" with proper dates and times
+    * according to multi day events lengths (start date - end date).
+    * These created events are only used in the home fragment calendar.
+    * Never saved into DB.
+    *
+    * Returns list with added events for multi day entries
+    *
+     */
     private fun multipleDayEvents(list: MutableList<Event>): MutableList<Event> {
         val modifiedList: MutableList<Event> = mutableListOf()
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -69,14 +66,16 @@ class activityViewModel(application: Application): AndroidViewModel(application)
         for(e in list){
             // If event goes into multiple days
             if(e.eventStartDate != e.eventEndDate) {
-                Log.d("MULTIPLEDAYS", "${e.eventStartDate}")
-                var sDate: LocalDate = LocalDate.parse("${e.eventStartDate}", formatter)
-                var eDate: LocalDate = LocalDate.parse("${e.eventEndDate}", formatter)
+                // Gets time between start and end
+                var sDate: LocalDate = LocalDate.parse(e.eventStartDate, formatter)
+                var eDate: LocalDate = LocalDate.parse(e.eventEndDate, formatter)
                 val period = sDate.until(eDate)
-                //val daysBetween = period.days
+
+                // helpers
                 val newStartTime = "00:00"
                 val newEndTime = "23:59"
 
+                // Create events according to days between start and end
                 for(i in 1 until period.days){
                     // Next day
                     var newSD: LocalDate = sDate.plusDays(1)
@@ -86,7 +85,6 @@ class activityViewModel(application: Application): AndroidViewModel(application)
                     sDate = newSD
                     // Create new event with new start and end datetimes, dates are equal
                     val newE = e.copy(eventStartDate = newStartDate, eventStartTime = newStartTime, eventEndDate = newStartDate, eventEndTime = newEndTime)
-                    //Log.d("MULTIPLEDAYS", "$newE")
                     modifiedList.add(newE)
                 }
                 // Add final day event
@@ -94,14 +92,20 @@ class activityViewModel(application: Application): AndroidViewModel(application)
                 val newStartDate: String = parseAndSetNewDT(newSD)
                 val finalDay = e.copy(eventStartDate = newStartDate, eventStartTime = newStartTime, eventEndDate = newStartDate)
                 modifiedList.add(finalDay)
-                // Modify starting date endtime CHANGED SO THIS IS HANDLED IN EVENTSADAPTER
-                //e.eventEndTime = newEndTime
-                //Log.d("MULTIPLEDAYS", "${e.eventEndDate}")
             }
         }
         return modifiedList
     }
 
+    /*
+    *
+    * Gets list with multi day events already added. Looks for events
+    * with that have repeating set. Creates repeat events accordingly.
+    * These created events are only used in the home fragment calendar.
+    * Never saved into DB.
+    * Returns list with added events for repeat entries
+    *
+     */
     private fun addRepeats(originalEvents: MutableList<Event>): MutableList<Event>{
         val listWithRepeats: MutableList<Event> = mutableListOf()
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -177,7 +181,6 @@ class activityViewModel(application: Application): AndroidViewModel(application)
     }
 
     // Parse new date and time for notification
-    //TODO: See if actually needed??
     private fun parseAndSetNewDT(dt: LocalDate): String {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         return dt.format(formatter).toString()

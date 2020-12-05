@@ -10,11 +10,6 @@ class EventDecorator(color: Int, dates: Collection<CalendarDay>) : DayViewDecora
     private var color: Int = color
     private var dates: HashSet<CalendarDay> = HashSet(dates)
 
-    /*EventDecorator(color: Int, dates: Collection<CalendarDay>) {
-        this.color = color
-        this.dates = HashSet(dates)
-    }*/
-
     override fun shouldDecorate(day: CalendarDay?): Boolean {
         return dates.contains(day)
     }
