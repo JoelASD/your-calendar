@@ -111,8 +111,8 @@ class activityViewModel(application: Application): AndroidViewModel(application)
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
         for (e in originalEvents) {
-            val sDate: LocalDate = LocalDate.parse("${e.eventStartDate}", formatter)
-            val eDate: LocalDate = LocalDate.parse("${e.eventEndDate}", formatter)
+            val sDate: LocalDate = LocalDate.parse(e.eventStartDate, formatter)
+            val eDate: LocalDate = LocalDate.parse(e.eventEndDate, formatter)
             // 0=no repeat, 1=everyday, 2=every weekday, 3=weekly, 4=monthly, 5=yearly
             when(e.eventRepeat) {
                 0 -> {
