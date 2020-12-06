@@ -15,7 +15,8 @@ import kotlin.collections.ArrayList
  */
 class EventSlidePagerAdapter(
     fa: FragmentActivity,
-    val events: MutableList<Event>
+    val events: MutableList<Event>,
+    val originalEvents: MutableList<Event>
 ) : FragmentStateAdapter(fa) {
 
     //We use this date, to get the current date
@@ -40,8 +41,10 @@ class EventSlidePagerAdapter(
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
         val dayEvents = ArrayList(events.filter { it.eventStartDate == dateFormat.format(calendar.time) })
         //pass the filtered events to the eventSlidePageFragment
+        val orEvents = ArrayList(originalEvents)
         val bundle = Bundle()
         bundle.putParcelableArrayList("events", dayEvents)
+        bundle.putParcelableArrayList("originalEvents", orEvents)
         val fragment = EventSlidePageFragment()
         fragment.arguments = bundle
         return fragment

@@ -2,6 +2,7 @@ package com.mp.yourcalendar.ui.newevent
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.inputmethodservice.Keyboard
 import android.location.Address
 import android.location.Geocoder
 import androidx.lifecycle.ViewModelProvider
@@ -72,7 +73,9 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
 
         newEventAddNotificationButton.setOnClickListener { addNotificationView() }
 
-        newEventCreateButton.setOnClickListener { createEvent() }
+        newEventCreateButton.setOnClickListener {
+            createEvent()
+        }
     }
 
     // Initialize date and time "holders" and pickers
@@ -434,7 +437,6 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
                     else null
 
             validateNotifications()
-
             saveEvent()
 
         } else {

@@ -113,7 +113,7 @@ class HomeFragment : Fragment() {
         //val dateParts: List<String> = LocalDate.now().toString().split("-")
         //getDailyEvents("${dateParts[2]}/${dateParts[1]}/${dateParts[0]}")
 
-        val adapter = EventSlidePagerAdapter(requireActivity(), properList)
+        val adapter = EventSlidePagerAdapter(requireActivity(), properList, eventList)
         viewPager.adapter = adapter
         viewPager.currentItem = Int.MAX_VALUE / 2
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -123,7 +123,7 @@ class HomeFragment : Fragment() {
                 calendar.time = adapter.date
                 calendar.add(Calendar.DATE, position)
                 val year = calendar.get(Calendar.YEAR)
-                val month = calendar.get(Calendar.MONTH) + 1
+                val month = calendar.get(Calendar.MONTH)
                 val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
                 calendarView.selectedDate = CalendarDay.from(year, month, dayOfMonth)
                 val calendarCalendar = Calendar.getInstance()

@@ -33,11 +33,12 @@ class EventSlidePageFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val events: ArrayList<Event> = requireArguments().getParcelableArrayList("events")!!
+        val originalEvents: ArrayList<Event> = requireArguments().getParcelableArrayList("originalEvents")!!
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = EventsAdapter(events)
+        recyclerView.adapter = EventsAdapter(events, originalEvents )
     }
 
-    inner class EventsAdapter(val events: ArrayList<Event>): RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
+    inner class EventsAdapter(val events: ArrayList<Event>, val originalEvents: MutableList<Event>): RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
             return EventViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.event_item, parent, false))
         }
@@ -47,7 +48,12 @@ class EventSlidePageFragment: Fragment() {
             //name
             holder.nameTextView.text = e.eventName
             //startdatetime
-            holder.startDateTimeText.text = "${e.eventStartTime} - ${e.eventEndTime}"
+            //startdatetime, if multi day event, show first day end time 23:59
+            holder.startDateTimeText.text =
+                if (e.eventStartDate != e.eventEndDate) "${e.eventStartTime} - 23:59"
+                else if (e.eventStartTime == "00:00" && e.eventEndTime == "23:59") "Whole day"
+                else "${e.eventStartTime} - ${e.eventEndTime}"
+            //holder.startDateTimeText.text = "${e.eventStartTime} - ${e.eventEndTime}"
             //color of the event
             //rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_blue)
             val drawable = holder.colorTextView.background as GradientDrawable
@@ -78,9 +84,12 @@ class EventSlidePageFragment: Fragment() {
                     if (position == RecyclerView.NO_POSITION) {
                         return@setOnClickListener
                     }
-                    val event = events[position]
-
-                    val action: NavDirections = HomeFragmentDirections.actionNavHomeToEventDetailFragment(event)
+                    //val event = events[position]
+                    // From the list with only original events, find event that matches eventKey with event from properList
+                    //val dEvent: Event? = oEvents.find { it.eventKey == events[position].eventKey }
+                    //val dEvent: Event? = events.find { it.eventKey == events[com.mp.yourcalendar.ui.home.EventsAdapter.position].eventKey }
+                    val dEvent: Event? = originalEvents.find {it.eventKey == events[position].eventKey }
+                    val action: NavDirections = HomeFragmentDirections.actionNavHomeToEventDetailFragment(dEvent!!)
                     findNavController().navigate(action)
                 }
             }
