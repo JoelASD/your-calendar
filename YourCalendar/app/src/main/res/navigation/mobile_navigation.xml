@@ -9,7 +9,7 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.mp.yourcalendar.ui.home.HomeFragment"
-        android:label="home"
+        android:label="Your Calendar"
         tools:layout="@layout/home_fragment" >
         <action
             android:id="@+id/action_nav_home_to_eventDetailFragment"
@@ -20,7 +20,7 @@
     <fragment
         android:id="@+id/nav_new_event"
         android:name="com.mp.yourcalendar.ui.newevent.NewEventFragment"
-        android:label="new event"
+        android:label="Create Event"
         tools:layout="@layout/new_event_fragment" >
 
         <action
@@ -35,7 +35,7 @@
     <fragment
         android:id="@+id/eventDetailFragment"
         android:name="com.mp.yourcalendar.EventDetailFragment"
-        android:label="event detail"
+        android:label="Details"
         tools:layout="@layout/fragment_event_detail" >
         <argument
             android:name="currentEvent"
@@ -51,7 +51,7 @@
     <fragment
         android:id="@+id/eventEditFragment"
         android:name="com.mp.yourcalendar.EventEditFragment"
-        android:label="edit event"
+        android:label="Edit event"
         tools:layout="@layout/fragment_event_edit" >
         <argument
             android:name="currentEvent"
