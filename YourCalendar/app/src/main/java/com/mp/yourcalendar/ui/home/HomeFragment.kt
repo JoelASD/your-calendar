@@ -1,28 +1,24 @@
 package com.mp.yourcalendar.ui.home
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.mp.yourcalendar.R
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.mp.yourcalendar.Event
-import com.mp.yourcalendar.EventNotification
-import com.mp.yourcalendar.MainActivity
+import com.mp.yourcalendar.R
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.CalendarMode
-import kotlinx.android.synthetic.main.event_appwidget.*
-import kotlinx.android.synthetic.main.event_list.*
 import kotlinx.android.synthetic.main.home_fragment.*
-import java.time.Duration
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAmount
 import java.util.*
 
@@ -54,32 +50,51 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // Sets date selected to current day after view is created
-        calendarView.setSelectedDate(CalendarDay.today())
+        calendarView.selectedDate = CalendarDay.today()
+        dateChecker.text = DateFormat.getDateInstance().format(Date())
 
         // Calendar click handling, to show specific dates events
         calendarView.setOnDateChangedListener { widget, date, selected ->
-            val d: String = date.toString()
+            val calendarCalendar = Calendar.getInstance()
+            calendarCalendar.set(date.year, date.month, date.day)
+            dateChecker.text = DateFormat.getDateInstance().format(calendarCalendar.time)
+
+            /*val d: String = date.toString()
             val dateParts: List<String> = d.split("{" ,"}")
             val dateParts2: List<String> = dateParts[1].split("-")
             //val chosenDate = "${dateParts2[2]}/${dateParts2[2]}/${dateParts2[0]}"
             val chosenDate = formatDate(dateParts2[2].toInt(), dateParts2[1].toInt(), dateParts2[0].toInt())
-            getDailyEvents(chosenDate)
-            dateChecker.text = chosenDate
+            //getDailyEvents(chosenDate)
+            dateChecker.text = chosenDate*/
+
+            // We calculate the difference between today and the chosen date
+            val calendar = Calendar.getInstance()
+            calendar.time = Date()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH) + 1
+            val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+            val startDate = LocalDate.of(year, month, dayOfMonth)
+            val calendarDate = LocalDate.of(date.year, date.month, date.day)
+            val offset = ChronoUnit.DAYS.between(startDate, calendarDate).toInt()
+
+            //we update the position on the viewpager
+            //we Update the slider when we press on a date on the calendar
+            viewPager.currentItem = Int.MAX_VALUE / 2 + offset
         }
     }
 
     // Gets list of events and runs EventsAdapter with them to show in recyclerView
-    fun setupRecyclerView(events: MutableList<Event>){
+    /*fun setupRecyclerView(events: MutableList<Event>){
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.adapter = EventsAdapter(this, events, eventList)
-    }
+    }*/
 
     /*
     *   Gets date (from initCalendar() or calendarView being pressed)
     *   Finds events with that date and runs setupRecyclerView() to
     *   set those events into recyclerView
      */
-    fun getDailyEvents(date: String){
+    /*fun getDailyEvents(date: String){
         val list: MutableList<Event> = mutableListOf()
         for (event in properList){
             if (event.eventStartDate == date) {
@@ -88,16 +103,37 @@ class HomeFragment : Fragment() {
             }
         }
         setupRecyclerView(list)
-    }
+    }*/
 
     // Gets current date and runs function to set events from that date to recyclerView
+
+    //Viewpager Setup
     fun initCalendar(){
         // Sets markers to calendar days when there is events
         getDaysWithEvents()
 
         // Gets current date and runs function to set events from that date to recyclerView
-        val dateParts: List<String> = LocalDate.now().toString().split("-")
-        getDailyEvents("${dateParts[2]}/${dateParts[1]}/${dateParts[0]}")
+        //val dateParts: List<String> = LocalDate.now().toString().split("-")
+        //getDailyEvents("${dateParts[2]}/${dateParts[1]}/${dateParts[0]}")
+
+        val adapter = EventSlidePagerAdapter(requireActivity(), properList)
+        viewPager.adapter = adapter
+        viewPager.currentItem = Int.MAX_VALUE / 2
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                // When we slide left or right, we update the selected date on the calendar
+                val calendar = Calendar.getInstance()
+                calendar.time = adapter.date
+                calendar.add(Calendar.DATE, position)
+                val year = calendar.get(Calendar.YEAR)
+                val month = calendar.get(Calendar.MONTH) + 1
+                val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+                calendarView.selectedDate = CalendarDay.from(year, month, dayOfMonth)
+                val calendarCalendar = Calendar.getInstance()
+                calendarCalendar.set(year, month, dayOfMonth)
+                dateChecker.text = DateFormat.getDateInstance().format(calendarCalendar.time)
+            }
+        })
     }
 
     /*

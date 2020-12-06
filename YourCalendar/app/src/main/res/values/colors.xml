@@ -16,5 +16,11 @@
     <color name="pink">#fa43c9</color>
     <color name="purple">#990094</color>
     <color name="brown">#663800</color>
+    <color name="honolulu_blue">#006EA1</color>
+    <color name="usafa_blue">#00517D</color>
+    <color name="light_grey">#bbbbbb</color>
+    <color name="html_light_grey">#E8E8E8</color>
+    <color name="grey">#aaaaaa</color>
+
 
 </resources>

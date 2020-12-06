@@ -1,25 +1,21 @@
 package com.mp.yourcalendar.ui.home
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.navigation.NavDirections
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.mp.yourcalendar.Event
 import com.mp.yourcalendar.R
-import com.mp.yourcalendar.ui.newevent.NewEventFragmentDirections
 import kotlinx.android.synthetic.main.event_item.view.*
-import org.w3c.dom.Text
+import java.text.SimpleDateFormat
+import java.util.*
 
-class EventsAdapter(private val parentFragment: HomeFragment, allEvents: MutableList<Event>, originalEvents: MutableList<Event>) : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
+class EventsAdapter(private val parentFragment: HomeFragment, allEvents: MutableList<Event>/*, originalEvents: MutableList<Event>*/) : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
     private val onClickListener: View.OnClickListener
 
     //private val eventit: MutableList<Event> = events
@@ -27,7 +23,14 @@ class EventsAdapter(private val parentFragment: HomeFragment, allEvents: Mutable
     // properList from home fragment (all events)
     private val events: MutableList<Event> = allEvents
     // eventList from home fragment (only original events)
-    private val oEvents: MutableList<Event> = originalEvents
+    //private val oEvents: MutableList<Event> = originalEvents
+
+    val date: Date get() {
+        val calendar = Calendar.getInstance()
+        calendar.time = Date()
+        calendar.add(Calendar.DATE, -(Int.MAX_VALUE / 2))
+        return calendar.time
+    }
 
     companion object {
         var position: Int = 0
@@ -42,8 +45,8 @@ class EventsAdapter(private val parentFragment: HomeFragment, allEvents: Mutable
             Log.d("Event", "${dEvent.eventKey}")*/
 
             // From the list with only original events, find event that matches eventKey with event from properList
-            val dEvent: Event? = oEvents.find { it.eventKey == events[position].eventKey }
-
+            //val dEvent: Event? = oEvents.find { it.eventKey == events[position].eventKey }
+            val dEvent: Event? = events.find { it.eventKey == events[position].eventKey }
 
             val action: NavDirections = HomeFragmentDirections.actionNavHomeToEventDetailFragment(dEvent!!)
             parentFragment.findNavController().navigate(action)
@@ -56,18 +59,27 @@ class EventsAdapter(private val parentFragment: HomeFragment, allEvents: Mutable
         return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int = events.size
+    override fun getItemCount(): Int = Int.MAX_VALUE
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val nameTextView: TextView = view.itemNameTextView
         val startDateTimeText: TextView = view.itemTimeTextView
         val colorTextView: TextView = view.colortextView
-
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.DATE, position)
 
-        val e: Event = events.get(position)
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
+        val e = events.firstOrNull { it.eventStartDate == dateFormat.format(calendar.time) }
+        if (e == null) {
+            // TODO: Show empty view
+            return
+        }
+
+        //val e: Event = events.get(position)
         //name
         holder.nameTextView.text = e.eventName
         //startdatetime
@@ -75,7 +87,6 @@ class EventsAdapter(private val parentFragment: HomeFragment, allEvents: Mutable
         //color of the event
         //rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_blue)
         val drawable = holder.colorTextView.background as GradientDrawable
-        Log.d("EventsAdapter", drawable.toString())
         when (e.eventType) {
             0 -> drawable.setColor(Color.BLUE) //holder.colorTextView.setBackgroundResource(R.drawable.box_blue)
             1 -> holder.colorTextView.setBackgroundResource(R.drawable.box_green)

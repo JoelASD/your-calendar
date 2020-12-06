@@ -65,7 +65,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/login" />
+                android:text="@string/login"
+                android:textColor="@color/white"/>
 
             <Button
                 android:id="@+id/toRegisterButton"
@@ -73,6 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/design_default_color_primary_variant"
+                android:textColor="@color/white"
                 android:text="@string/signup" />
 
         </LinearLayout>
@@ -86,7 +88,7 @@
             android:layout_marginStart="32dp"
             android:backgroundTint="#00FFFFFF"
             android:outlineProvider="none"
-            android:textColor="@color/design_default_color_primary" />
+            android:textColor="@color/blue" />
 
     </LinearLayout>
 

@@ -6,10 +6,11 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/boxbg_test"
     android:paddingHorizontal="12dp"
     android:paddingVertical="4dp"
-    android:layout_marginBottom="4dp">
+    android:layout_marginBottom="4dp"
+    android:background="@drawable/event_item_box"
+    android:outlineAmbientShadowColor="@color/grey">
 
     <TextView
         android:id="@+id/colortextView"

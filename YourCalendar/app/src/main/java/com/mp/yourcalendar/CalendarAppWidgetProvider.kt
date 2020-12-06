@@ -17,6 +17,9 @@ import java.util.*
 
 class CalendarAppWidgetProvider : AppWidgetProvider() {
 
+    //To check if user is logged in for the widget
+    private lateinit var auth: FirebaseAuth
+
     override fun onUpdate(
             context: Context,
             appWidgetManager: AppWidgetManager,
@@ -38,6 +41,10 @@ class CalendarAppWidgetProvider : AppWidgetProvider() {
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
             }
 
+            //check, if user is logged in
+            auth = FirebaseAuth.getInstance()
+            val user = auth.currentUser
+
             //get the layout for the App Widget and attach on click listener to the button
             val views: RemoteViews = RemoteViews(context.packageName, R.layout.event_appwidget).apply {
                 setOnClickPendingIntent(R.id.clickTextView, pendingIntent)
@@ -51,7 +58,18 @@ class CalendarAppWidgetProvider : AppWidgetProvider() {
                 // The empty view is displayed when the collection has no items.
                 // It should be in the same layout used to instantiate the RemoteViews
                 // object above.
-                setEmptyView(R.id.listView, R.id.empty_view)
+                //Also checking, if user is logged in, and if not, then displaying different TextView
+                if (user == null) {
+                    Log.d("LoggedIn", "im not logged in!")
+                    setEmptyView(R.id.listView, R.id.empty_view_not_logged)
+                    setViewVisibility(R.id.empty_view_not_logged, 0)
+
+                } else if (user != null) {
+                    Log.d("LoggedIn", "im logged in!")
+                    setEmptyView(R.id.listView, R.id.empty_view)
+                    setViewVisibility(R.id.empty_view, 0)
+
+                }
             }
             //just a test for updating day
             loadDateView(views)
