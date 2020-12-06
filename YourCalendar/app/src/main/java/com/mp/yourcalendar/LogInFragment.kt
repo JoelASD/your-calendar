@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.fragment_log_in.*
 
 class LogInFragment : Fragment() {
     
@@ -57,13 +58,35 @@ class LogInFragment : Fragment() {
         return logInView
     }
 
+    /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        // Go to registration
+        toRegisterButton.setOnClickListener {
+            changeFragment(RegisterFragment())
+        }
+
+        // Go to reset password
+        forgotPasswordButton.setOnClickListener {
+            changeFragment(ResetPasswordFragment())
+        }
+
+        // Login Button
+        logInButton.setOnClickListener {
+            // Check some inputs are given
+            if (logInEmailEditText.text.trim().isNotEmpty() && logInPasswordEditText.text.trim().isNotEmpty()) {
+                logInUser(logInEmailEditText.text.trim().toString(), logInPasswordEditText.text.trim().toString())
+            } else {
+
+            }
+        }
+    }*/
+
     // User Login with email and psw
     fun logInUser(email: String, password: String){
         Firebase.auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if(task.isSuccessful){
                     // Login successful -> start MainActivity
-                    var intent = Intent(activity!!, MainActivity::class.java)
+                    var intent = Intent(requireActivity(), MainActivity::class.java)
                     startActivity(intent)
                 } else {
                     // Login failed show error
@@ -71,9 +94,9 @@ class LogInFragment : Fragment() {
                     try {
                         throw task.exception!!
                     } catch (e: FirebaseAuthInvalidCredentialsException) {
-                        Toast.makeText(activity!!, "Invalid password!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireActivity(), "Invalid password!", Toast.LENGTH_LONG).show()
                     } catch (e: FirebaseAuthInvalidUserException) {
-                        Toast.makeText(activity!!, "Account not found!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireActivity(), "Account not found!", Toast.LENGTH_LONG).show()
                     }
                 }
             }

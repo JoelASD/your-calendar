@@ -3,12 +3,18 @@ package com.mp.yourcalendar.ui.newevent
 import android.location.Address
 import android.location.Geocoder
 import android.util.Log
+import android.widget.Toast
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.mp.yourcalendar.Event
+import com.mp.yourcalendar.EventEditFragmentDirections
 import com.mp.yourcalendar.EventNotification
 import java.time.Duration
 import java.time.LocalDate
@@ -61,6 +67,78 @@ class NewEventViewModel : ViewModel() {
     var endYear = 0
     var endHour = 0
     var endMinute = 0
+
+
+    var initialized: Boolean = false
+
+    private val _sDate = MutableLiveData<String>()
+    fun sDate(): LiveData<String> { return _sDate }
+
+    private val _sTime = MutableLiveData<String>()
+    fun sTime(): LiveData<String> { return _sTime }
+
+    private val _eDate = MutableLiveData<String>()
+    fun eDate(): LiveData<String> { return _eDate }
+
+    private val _eTime = MutableLiveData<String>()
+    fun eTime(): LiveData<String> { return _eTime }
+
+    private val _type = MutableLiveData<Int>()
+    fun type(): LiveData<Int> { return _type }
+
+    private val _repeat = MutableLiveData<Int>()
+    fun repeat(): LiveData<Int> { return _repeat }
+
+    private val _loc = MutableLiveData<String>()
+    fun loc(): LiveData<String> { return _loc }
+
+    private val _locLatLng = MutableLiveData<String>()
+    fun locLatLng(): LiveData<String> { return _locLatLng }
+
+    private val _notifs = MutableLiveData<MutableList<EventNotification>>()
+
+    var state = 0
+
+    val uusiEventti: MutableLiveData<Event> = MutableLiveData()
+    //var eventti: Event = Event()
+
+    fun initNewEvent() {
+        uusiEventti.value = Event()
+
+        // Init dates and times
+        val sdtParts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")).split(" ")
+        val edtParts = LocalDateTime.now().plusHours(1).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")).split(" ")
+        /*sDate.value = sdtParts[0]
+        sTime.value = sdtParts[1]
+        eDate.value = edtParts[0]
+        eTime.value = edtParts[1]
+        type.value = 0
+        repeat.value = 0*/
+
+        initialized = true
+    }
+
+    // Format new date and set it POSSIBLY RIGHT?
+    /*fun formatDate(day: Int, month: Int, year: Int): String{
+        return if (day < 10 && month < 10) "0$day/0$month/$year"
+        else if (day < 10 && month > 10) "0$day/$month/$year"
+        else if (day > 10 && month < 10) "$day/0$month/$year"
+        else "$day/$month/$year"
+    }
+
+    fun formatTime(hour: Int, minute: Int): String{
+        return if (hour < 10 && minute < 10) "0$hour:0$minute"
+        else if (hour < 10 && minute > 10) "0$hour:$minute"
+        else if (hour > 10 && minute < 10) "$hour:0$minute"
+        else "$hour:$minute"
+
+    }*/
+
+
+
+
+
+
 
     // Function to initialize dates and times when fragment is opened
     fun initDateTimePicker(){
@@ -217,7 +295,7 @@ class NewEventViewModel : ViewModel() {
                 val newDT: LocalDateTime = minus(Duration.ofMinutes(5, ), dt)
                 // Get new date and time
                 val newParts: List<String> = parseAndSetNewDT(newDT)
-                // Add them to the list as new EventNotification instances
+                // Add them to the list as new EventNotification instance
                 notificationList.add(EventNotification(newParts[0], newParts[1], 1))
             }
             2 -> {
@@ -296,7 +374,7 @@ class NewEventViewModel : ViewModel() {
     }
 
     fun createEvent(name: String, desc: String?): Event{
-        val event = Event(name, startDate, startTime, endDate, endTime, desc, eventType, eventRepeat, eventLocation, eventLatLng, notificationList)
+        val event = Event(name, startDate, startTime, endDate, endTime, desc, eventType, eventRepeat, eventLocation, eventLatLng, notificationList, null)
         return event
     }
 
@@ -317,6 +395,14 @@ class NewEventViewModel : ViewModel() {
         val userUID = Firebase.auth.uid
         if (userUID != null){
             database.child("users").child(userUID).push().setValue(event)
+                    /*.addOnSuccessListener {
+                        //Toast.makeText(, "Event saved!", Toast.LENGTH_SHORT).show()
+                        //val action: NavDirections = EventEditFragmentDirections.actionEventEditToNavHome()
+                        //findNavController().navigate(action)
+                    }
+                    .addOnFailureListener {
+                        //Toast.makeText(context, "Event couldn't be saved.. $it", Toast.LENGTH_SHORT).show()
+                    }*/
         } else {
             Log.d("USER_ERROR", "Couldnt find user!")
         }
