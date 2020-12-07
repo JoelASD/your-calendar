@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start" > <!-- tools:context=".MainActivity" -->
+    tools:openDrawer="start" >
 
     <include
         layout="@layout/app_bar_main"
@@ -22,16 +22,5 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
-
-    <!-- Placeholder logout button before figuring out the actual place for it
-    <Button
-        android:id="@+id/mainLogOutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" /> -->
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -16,22 +16,20 @@
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
-            android:layout_height="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/boxbg_test"
-            app:mcv_calendarMode="month"
-            app:mcv_selectionColor="#636363"
-            app:mcv_showOtherDates="all"
+            android:backgroundTint="@color/white">
 
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
                 android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/html_light_grey"
                 app:mcv_calendarMode="month"
+                android:layout_marginHorizontal="8dp"
                 app:mcv_selectionColor="#636363"
-                app:mcv_showOtherDates="all"
-
-                />
+                app:mcv_showOtherDates="all" />
 
         </FrameLayout>
 
@@ -72,18 +70,6 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp" />
-
-        <!--<FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp">
-
-            <include layout="@layout/event_list" />
-
-        </FrameLayout>-->
 
     </LinearLayout>
 
