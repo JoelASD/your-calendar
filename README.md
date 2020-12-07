@@ -14,4 +14,4 @@ A Calender app, which shows all your meetings, the location of the meeting and t
 
 ## Screenshots
 
-[](Documents/Screenshots/Screenshot1.jpg)
+![](Documents/Screenshots/Screenshot1.jpg)
