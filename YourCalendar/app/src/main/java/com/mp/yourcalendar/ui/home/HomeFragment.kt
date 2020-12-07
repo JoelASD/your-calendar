@@ -8,9 +8,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.mp.yourcalendar.Event
+import com.mp.yourcalendar.MainActivity
 import com.mp.yourcalendar.R
+import com.mp.yourcalendar.ui.newevent.NewEventFragmentDirections
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.CalendarMode
 import kotlinx.android.synthetic.main.home_fragment.*
@@ -79,6 +83,12 @@ class HomeFragment : Fragment() {
             //we Update the slider when we press on a date on the calendar
             viewPager.currentItem = Int.MAX_VALUE / 2 + offset
         }
+
+        // FAB listener
+        fab.setOnClickListener {
+            val action: NavDirections = HomeFragmentDirections.actionNavHomeToNavNewEvent()
+            findNavController().navigate(action)
+        }
     }
 
     // Gets list of events and runs EventsAdapter with them to show in recyclerView
@@ -125,7 +135,7 @@ class HomeFragment : Fragment() {
                 val year = calendar.get(Calendar.YEAR)
                 val month = calendar.get(Calendar.MONTH)
                 val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-                calendarView.selectedDate = CalendarDay.from(year, month, dayOfMonth)
+                calendarView.selectedDate = CalendarDay.from(year, month+1, dayOfMonth)
                 val calendarCalendar = Calendar.getInstance()
                 calendarCalendar.set(year, month, dayOfMonth)
                 dateChecker.text = DateFormat.getDateInstance().format(calendarCalendar.time)

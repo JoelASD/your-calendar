@@ -28,10 +28,17 @@
         <item>Purple</item>
         <item>Brown</item>
     </string-array>
-
-    //event Button
+    
     <string name="newEventButton">Create new event</string>
 
+    <string-array name="repeat_array">
+        <item>No repeat</item>
+        <item>Once a week</item>
+        <item>Once a month</item>
+        <item>Once a year</item>
+    </string-array>
+
+    <!--
     <string-array name="repeat_array">
         <item>No repeat</item>
         <item>Every day</item>
@@ -40,6 +47,7 @@
         <item>Once a month</item>
         <item>Once a year</item>
     </string-array>
+    -->
 
     <string-array name="notification_array">
         <item>At start time</item>

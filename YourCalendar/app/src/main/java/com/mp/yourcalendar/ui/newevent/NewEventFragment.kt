@@ -22,10 +22,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.mp.yourcalendar.Event
-import com.mp.yourcalendar.EventEditFragmentDirections
-import com.mp.yourcalendar.EventNotification
-import com.mp.yourcalendar.R
+import com.mp.yourcalendar.*
 import kotlinx.android.synthetic.main.fragment_event_edit.*
 import kotlinx.android.synthetic.main.new_event_fragment.*
 import java.lang.reflect.Field

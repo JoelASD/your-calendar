@@ -85,13 +85,11 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
 
         repeatTextView.text =
                 when(args.currentEvent.eventRepeat){
-                    0 -> "Not repeating"
-                    1 -> "Everyday"
-                    2 -> "Every weekday"
-                    3 -> "Once week"
-                    4 -> "Once a month"
-                    5 -> "Yearly"
-                    else -> "Couldn't retrieve repeat pattern"
+                    0 -> ""
+                    1 -> "Once week"
+                    2 -> "Once a month"
+                    3 -> "Yearly"
+                    else -> ""
                 }
 
         // Notifications

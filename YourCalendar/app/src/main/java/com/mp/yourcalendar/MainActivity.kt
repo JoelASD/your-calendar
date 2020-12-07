@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -21,8 +22,10 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.mp.yourcalendar.ui.home.HomeFragment
+import com.mp.yourcalendar.ui.home.HomeFragmentDirections
 import com.mp.yourcalendar.ui.home.activityViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -91,12 +94,12 @@ class MainActivity : AppCompatActivity() {
         }
         navView.menu.findItem(R.id.nav_weekly_view).setOnMenuItemClickListener {
             viewModel.changeCalendarView(2)
-            navView.menu.close()
+            drawer_layout.closeDrawers()
             true
         }
         navView.menu.findItem(R.id.nav_monthly_view).setOnMenuItemClickListener {
             viewModel.changeCalendarView(1)
-            navView.menu.close()
+            drawer_layout.closeDrawers()
             true
         }
 
@@ -132,10 +135,4 @@ class MainActivity : AppCompatActivity() {
         auth.signOut()
         startAuthActivity()
     }
-
-    // When valueEventListener is triggered and data in activityViewModel is updated with this
-    /*fun databaseLoaded(list: MutableList<Event>) {
-        Log.d("LOADED", "MAIN ACTIVITY: DATABASE LOADED, ${list.size}")
-        viewModel.setEventList(list)
-    }*/
 }
