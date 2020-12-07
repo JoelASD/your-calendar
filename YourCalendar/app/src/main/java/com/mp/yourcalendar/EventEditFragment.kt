@@ -537,6 +537,7 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         }
     }
 
+    // Create notification and set Alarm manager to time it
     private fun createPendingNotifications(context: Context, event: Event) {
         // Create new pending notifications
         for (notif in event.eventNotificationList) {
@@ -574,6 +575,7 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         }
     }
 
+    // Close keyboard
     private fun closekb() {
         val activity = requireActivity()
 

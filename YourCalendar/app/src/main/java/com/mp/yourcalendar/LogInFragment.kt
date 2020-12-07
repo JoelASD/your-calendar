@@ -2,14 +2,10 @@ package com.mp.yourcalendar
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.method.Touch
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import android.widget.Toast.makeText
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -27,38 +23,7 @@ class LogInFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val logInView = inflater.inflate(R.layout.fragment_log_in, container, false)
-
-        /*
-        // Get/listen to toRegistrationButton, set action
-        val toRegisterButton = logInView.findViewById<View>(R.id.toRegisterButton) as Button
-        toRegisterButton.setOnClickListener {
-            changeFragment(RegisterFragment()) // Go to registration
-        }
-
-        // Get/listen to forgotPasswordButton, set action
-        val forgotPasswordButton = logInView.findViewById<View>(R.id.forgotPasswordButton) as Button
-        forgotPasswordButton.setOnClickListener {
-            changeFragment(ResetPasswordFragment()) // Go to resetPassword
-        }
-
-        //get logInButton, emailInput and passwordInput
-        val logInButton = logInView.findViewById<View>(R.id.logInButton) as Button
-        val emailInput = logInView.findViewById<View>(R.id.logInEmailEditText) as EditText
-        val passwordInput = logInView.findViewById<View>(R.id.logInPasswordEditText) as EditText
-        //listen to logInButton
-        logInButton.setOnClickListener {
-            // Check if inputs are ok
-            if(emailInput.text.trim().toString().isNotEmpty() && passwordInput.text.trim().toString().isNotEmpty()){
-                // Try to log user in
-                logInUser(emailInput.text.trim().toString(), passwordInput.text.trim().toString())
-            } else {
-                //TODO: proper error
-                Log.d("LOGIN", "No email or password given")
-            }
-        }*/
-
-        return logInView
+        return inflater.inflate(R.layout.fragment_log_in, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

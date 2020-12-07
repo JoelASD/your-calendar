@@ -1,5 +1,6 @@
 package com.mp.yourcalendar
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent

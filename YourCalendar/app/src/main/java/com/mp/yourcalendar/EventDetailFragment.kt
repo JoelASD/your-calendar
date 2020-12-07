@@ -150,6 +150,7 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    // Load forecast
     private fun loadWeatherForecast(lat: String, lng: String){
         //url for loading
         //val url = "$API_LINK$city&APPID=$API_KEY&units=metric&lang=fi"
@@ -192,6 +193,7 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
         queue.add(jsonObjectRequest)
     }
 
+    // Show weather
     private fun setWeatherUI(){
         locationTextView.text = args.currentEvent.eventLocName
         temperatureTextView.text = locTemperature
@@ -207,6 +209,7 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
             .into(conditionImageView)
     }
 
+    // Add notification list info
     fun addNotificationViews(){
         if (args.currentEvent.eventNotificationList.size > 0) {
             for (item in args.currentEvent.eventNotificationList){
@@ -222,6 +225,7 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
 
     }
 
+    // Delete function
     private fun deleteEvent(key: String) {
         val UID = Firebase.auth.uid
         if (UID != null) {
@@ -242,6 +246,7 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    // Cancel all notifications
     private fun cancelNotifications(context: Context) {
         // Loop through current events notifications and cancel them
         for (notif in args.currentEvent.eventNotificationList) {

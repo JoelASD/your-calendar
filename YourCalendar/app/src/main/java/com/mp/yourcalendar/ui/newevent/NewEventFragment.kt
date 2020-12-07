@@ -40,9 +40,6 @@ import kotlin.random.Random
 
 class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    // ViewModel
-    private lateinit var newEventViewModel: NewEventViewModel
-
     // Helper for date and time pickers
     var button: Int = 0
 
@@ -62,7 +59,6 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        //newEventViewModel = ViewModelProvider(this).get(NewEventViewModel::class.java)
         return inflater.inflate(R.layout.new_event_fragment, container, false)
     }
 
@@ -88,7 +84,6 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
         val edtParts = LocalDateTime.now().plusHours(1).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")).split(" ")
 
         newEvent.eventStartDate = sdtParts[0]
-        //newEventStartDateButton.text = sdtParts[0]
         newEventStartDateButton.setOnClickListener {
             val dParts: List<String> = newEvent.eventStartDate.split("/")
             DatePickerDialog(requireContext(), this, dParts[2].toInt(), dParts[1].toInt() - 1, dParts[0].toInt()).show()
@@ -96,7 +91,6 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
         }
 
         newEvent.eventStartTime = sdtParts[1]
-        //newEventStartTimeButton.text = sdtParts[0]
         newEventStartTimeButton.setOnClickListener {
             val tParts: List<String> = newEvent.eventStartTime.split(":")
             TimePickerDialog(requireContext(), this, tParts[0].toInt(), tParts[1].toInt(), true).show()
@@ -104,7 +98,6 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
         }
 
         newEvent.eventEndDate = edtParts[0]
-        //newEventEndDateButton.text = edtParts[0]
         newEventEndDateButton.setOnClickListener {
             val dParts: List<String> = newEvent.eventEndDate.split("/")
             DatePickerDialog(requireContext(), this, dParts[2].toInt(), dParts[1].toInt() - 1, dParts[0].toInt()).show()
@@ -112,7 +105,6 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
         }
 
         newEvent.eventEndTime = edtParts[1]
-        //newEventEndTimeButton.text = edtParts[1]
         newEventEndTimeButton.setOnClickListener {
             val tParts: List<String> = newEvent.eventEndTime.split(":")
             TimePickerDialog(requireContext(), this, tParts[0].toInt(), tParts[1].toInt(), true).show()
@@ -150,13 +142,6 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
                 // If new start date is after old end date -> set end date to match start date
                 if (LocalDate.of(year, month, day).isAfter(LocalDate.of(edp[2].toInt(), edp[1].toInt(), edp[0].toInt()))) {
                     newEvent.eventEndDate = formatDate(day, month, year)
-
-                    // Now that dates are same, check that start time is not after endtime -> if yes, set endTime = startTime
-                    /*val stp: List<String> = newEvent.eventStartTime.split(":")
-                    val etp: List<String> = newEvent.eventEndTime.split(":")
-                    if (LocalTime.of(stp[0].toInt(), stp[1].toInt()).isAfter(LocalTime.of(etp[0].toInt(), etp[1].toInt()))) {
-                        newEvent.eventEndTime = newEvent.eventStartTime
-                    }*/
                 }
             }
             2 -> { // -> End date changed by user
@@ -168,13 +153,6 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
                 // If new end date is before start date -> set start date to match the end date
                 if (LocalDate.of(year, month, day).isBefore(LocalDate.of(sdp[2].toInt(), sdp[1].toInt(), sdp[0].toInt()))) {
                     newEvent.eventStartDate = formatDate(day, month, year)
-
-                    // Now that dates are same, check that start time is not after endtime -> if yes, set endTime = startTime
-                    /*val stp: List<String> = newEvent.eventStartTime.split(":")
-                    val etp: List<String> = newEvent.eventEndTime.split(":")
-                    if (LocalTime.of(stp[0].toInt(), stp[1].toInt()).isAfter(LocalTime.of(etp[0].toInt(), etp[1].toInt()))) {
-                        newEvent.eventEndTime = newEvent.eventStartTime
-                    }*/
                 }
             }
         }
@@ -385,16 +363,13 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
         // Loop through items in notificationList (view) and remove duplicate notifications
         for (item in notificationList) {
             val spinner = item.findViewById<Spinner>(R.id.notifSpinner)
-            //val selectedNotificationTime = spinner.selectedItemPosition
             list.add(spinner.selectedItemPosition)
-            //newEventViewModel.setNotificationDateTime(selectedNotificationTime)
         }
         createNotifications(list.distinct())
     }
 
     // Create EventNotifications and proceed add them to newEvent
     private fun createNotifications(list: List<Int>) {
-        //editedEvent.eventNotificationList.clear()
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
         val dParts: List<String> = newEvent.eventStartDate.split("/")
         val tParts: List<String> = newEvent.eventStartTime.split(":")
@@ -485,7 +460,7 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
 
     //__________________________________---------------
 
-
+    // Create notification and set Alarm manager to time it
     private fun createPendingNotification(context: Context, notif: EventNotification) {
         // Get time from now until notification push time in ms
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
@@ -520,6 +495,7 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
         manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+timeTo, pending)
     }
 
+    // Close keyboard
     private fun closekb() {
         val activity = requireActivity()
 
