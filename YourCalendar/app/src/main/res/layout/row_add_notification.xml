@@ -9,7 +9,7 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_weight="1"
-        android:text="Time:" />
+        android:text="@string/addNotificationTime" />
 
     <FrameLayout
         android:layout_width="0dp"
@@ -28,6 +28,6 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:background="@drawable/circle_button_test"
-        android:text="X" />
+        android:text="@string/addNotificationButton" />
 
 </LinearLayout>

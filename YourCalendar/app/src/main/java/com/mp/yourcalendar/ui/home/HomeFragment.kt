@@ -125,7 +125,7 @@ class HomeFragment : Fragment() {
                 val year = calendar.get(Calendar.YEAR)
                 val month = calendar.get(Calendar.MONTH)
                 val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-                calendarView.selectedDate = CalendarDay.from(year, month, dayOfMonth)
+                calendarView.selectedDate = CalendarDay.from(year, month +1, dayOfMonth)
                 val calendarCalendar = Calendar.getInstance()
                 calendarCalendar.set(year, month, dayOfMonth)
                 dateChecker.text = DateFormat.getDateInstance().format(calendarCalendar.time)
