@@ -1,10 +1,12 @@
 package com.mp.yourcalendar.ui.newevent
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
+import android.app.*
+import android.content.Context
+import android.content.Intent
 import android.inputmethodservice.Keyboard
 import android.location.Address
 import android.location.Geocoder
+import android.os.Build
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.iterator
 import androidx.lifecycle.Observer
 import androidx.navigation.NavDirections
@@ -30,6 +33,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.time.temporal.Temporal
+import kotlin.random.Random
 
 class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
@@ -215,16 +221,16 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
     // Format date string
     private fun formatDate(day: Int, month: Int, year: Int): String {
         return if (day < 10 && month < 10) "0$day/0$month/$year"
-        else if (day < 10 && month > 10) "0$day/$month/$year"
-        else if (day > 10 && month < 10) "$day/0$month/$year"
+        else if (day < 10 && month >= 10) "0$day/$month/$year"
+        else if (day >= 10 && month < 10) "$day/0$month/$year"
         else "$day/$month/$year"
     }
 
     // Format time string
     private fun formatTime(hour: Int, minute: Int): String {
         return if (hour < 10 && minute < 10) "0$hour:0$minute"
-        else if (hour < 10 && minute > 10) "0$hour:$minute"
-        else if (hour > 10 && minute < 10) "$hour:0$minute"
+        else if (hour < 10 && minute >= 10) "0$hour:$minute"
+        else if (hour >= 10 && minute < 10) "$hour:0$minute"
         else "$hour:$minute"
     }
 
@@ -396,7 +402,10 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
         for (i in list) {
             // 0=at start, 1=5m, 2=10m, 3=15m, 4=30m, 5=1h, 6=2h, 7=1d, 8=1w, 9=at end
             when (i) {
-                0 -> newEvent.eventNotificationList.add(EventNotification(newEvent.eventStartDate, newEvent.eventStartTime, 0))
+                0 -> {
+                    val rc = Random.nextInt(0, 100000000)
+                    newEvent.eventNotificationList.add(EventNotification(newEvent.eventStartDate, newEvent.eventStartTime, rc, 0))
+                }
                 1 -> addNotifToCollection(dt.minusMinutes(5), 1)
                 2 -> addNotifToCollection(dt.minusMinutes(10), 2)
                 3 -> addNotifToCollection(dt.minusMinutes(15), 3)
@@ -405,7 +414,17 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
                 6 -> addNotifToCollection(dt.minusHours(2), 6)
                 7 -> addNotifToCollection(dt.minusDays(1), 7)
                 8 -> addNotifToCollection(dt.minusWeeks(1), 8)
-                9 -> newEvent.eventNotificationList.add(EventNotification(newEvent.eventEndDate, newEvent.eventEndTime, 9))
+                9 -> {
+                    val rc = Random.nextInt(0, 100000000)
+                    newEvent.eventNotificationList.add(EventNotification(newEvent.eventEndDate, newEvent.eventEndTime, rc,9))
+                }
+            }
+        }
+
+        // Create pending notifications if
+        if (newEvent.eventNotificationList.isNotEmpty()) {
+            for (notif in newEvent.eventNotificationList) {
+                createPendingNotification(requireContext(), notif)
             }
         }
     }
@@ -414,8 +433,10 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
     private fun addNotifToCollection(dt: LocalDateTime, i: Int) {
         // Parse new date and time
         val dtParts: List<String> = parseAndSetNewDT(dt)
+        // Get random int for requestCode
+        val rc = Random.nextInt(0, 100000000)
         // Add them to the list as new EventNotification instance
-        newEvent.eventNotificationList.add(EventNotification(dtParts[0], dtParts[1], i))
+        newEvent.eventNotificationList.add(EventNotification(dtParts[0], dtParts[1], rc, i))
     }
 
     // Helps to parse notifications actual time and date
@@ -460,4 +481,40 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
         }
     }
 
+    //__________________________________---------------
+
+
+    private fun createPendingNotification(context: Context, notif: EventNotification) {
+        // Get time from now until notification push time in ms
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+        val showTime: LocalDateTime = LocalDateTime.parse("${notif.date} ${notif.time}", formatter)
+        val timeTo = LocalDateTime.now().until(showTime, ChronoUnit.MILLIS)
+        Log.d("TIMETO", "$timeTo")
+
+        val title = newEvent.eventName
+        val desc =
+            when(notif.type) {
+                0 -> "$title has started!"
+                1 -> "$title will start in 5 minutes!"
+                2 -> "$title will start in 10 minutes!"
+                3 -> "$title will start in 15 minutes!"
+                4 -> "$title will start in 30 minutes!"
+                5 -> "$title will start in 1 hour!"
+                6 -> "$title will start in 2 hours!"
+                7 -> "$title will start tomorrow!"
+                8 -> "$title will start in a week!"
+                9 -> "$title has ended."
+                else -> ""
+            }
+
+        Log.d("TYPE", "${notif.type}")
+        val intent = Intent(context, NotificationReceiver::class.java)
+        intent.putExtra("title", title)
+        intent.putExtra("description", desc)
+        val pending: PendingIntent = PendingIntent.getBroadcast(context, notif.rc!!, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        //Schedule
+        val manager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+timeTo, pending)
+    }
 }
