@@ -48,6 +48,7 @@ class CalendarAppWidgetProvider : AppWidgetProvider() {
             //get the layout for the App Widget and attach on click listener to the button
             val views: RemoteViews = RemoteViews(context.packageName, R.layout.event_appwidget).apply {
                 setOnClickPendingIntent(R.id.clickTextView, pendingIntent)
+                //setOnClickPendingIntent(R.id.listView, pendingIntent)
 
                 // Set up the RemoteViews object to use a RemoteViews adapter.
                 // This adapter connects
