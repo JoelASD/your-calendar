@@ -43,8 +43,6 @@ class EventSlidePagerAdapter(
         val dayEvents = ArrayList(events.filter { it.eventStartDate == dateFormat.format(calendar.time) })
         //pass the filtered events to the eventSlidePageFragment
         val orEvents = ArrayList(originalEvents)
-        //putInOrder(dayEvents)
-       // putInOrder(orEvents)
         val bundle = Bundle()
         bundle.putParcelableArrayList("events", dayEvents)
         bundle.putParcelableArrayList("originalEvents", orEvents)
@@ -52,19 +50,4 @@ class EventSlidePagerAdapter(
         fragment.arguments = bundle
         return fragment
     }
-
-
-   /* fun putInOrder(list: ArrayList<Event>): ArrayList<Event> {
-        for(pos in 1 until list.size) {
-            val sTimePart: List<String> = list[pos].eventStartTime.split(":")
-            for(item in list) {
-                val sTimePart2: List<String> = item.eventStartTime.split(":")
-                if(LocalTime.of(sTimePart[0].toInt(), sTimePart[1].toInt()).isBefore(LocalTime.of(sTimePart2[0].toInt(), sTimePart2[1].toInt()))) {
-                    Collections.swap(list, pos - 1, pos )
-                }
-            }
-        }
-        return list
-    } */
-
 }

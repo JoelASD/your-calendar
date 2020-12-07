@@ -48,8 +48,6 @@ class CalendarAppWidgetProvider : AppWidgetProvider() {
             //get the layout for the App Widget and attach on click listener to the button
             val views: RemoteViews = RemoteViews(context.packageName, R.layout.event_appwidget).apply {
                 setOnClickPendingIntent(R.id.clickTextView, pendingIntent)
-                //setOnClickPendingIntent(R.id.listView, pendingIntent)
-
                 // Set up the RemoteViews object to use a RemoteViews adapter.
                 // This adapter connects
                 // to a RemoteViewsService  through the specified intent.
@@ -85,18 +83,5 @@ class CalendarAppWidgetProvider : AppWidgetProvider() {
     fun loadDateView(views: RemoteViews){
         val weekday = SimpleDateFormat("EEEE, dd")
         views.setTextViewText(R.id.dayTextView, weekday.format(Date()))
-    }
-
-    override fun onAppWidgetOptionsChanged(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetId: Int, newOptions: Bundle?) {
-        //see the dimensions :
-        val options = appWidgetManager!!.getAppWidgetOptions(appWidgetId)
-        Log.d("Widget", "changed Dimensions")
-
-        //get min width and height
-        val minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
-        val minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
-
-        //get the right widget and update it
-   //     appWidgetManager.updateAppWidget(appWidgetId, getRemoteViews(context, appWidgetManager, appWidgetId, newOptions))
     }
 }

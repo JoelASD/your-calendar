@@ -3,7 +3,6 @@ package com.mp.yourcalendar.ui.home
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,6 @@ import com.mp.yourcalendar.Event
 import com.mp.yourcalendar.R
 import kotlinx.android.synthetic.main.event_item.view.*
 import kotlinx.android.synthetic.main.event_list.*
-import java.time.LocalTime
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -49,22 +47,18 @@ class EventSlidePageFragment: Fragment() {
 
         override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
             val e: Event = events[position]
-            //name
             holder.nameTextView.text = e.eventName
-            //startdatetime
             //startdatetime, if multi day event, show first day end time 23:59
             holder.startDateTimeText.text =
                 if (e.eventStartDate != e.eventEndDate) "${e.eventStartTime} - 23:59"
                 else if (e.eventStartTime == "00:00" && e.eventEndTime == "23:59") "Whole day"
                 else "${e.eventStartTime} - ${e.eventEndTime}"
-            //holder.startDateTimeText.text = "${e.eventStartTime} - ${e.eventEndTime}"
             //color of the event
-            //rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_blue)
             val drawable = holder.colorTextView.background as GradientDrawable
             when (e.eventType) {
-                0 -> drawable.setColor(Color.BLUE) //holder.colorTextView.setBackgroundResource(R.drawable.box_blue)
+                0 -> drawable.setColor(Color.BLUE)
                 1 -> holder.colorTextView.setBackgroundResource(R.drawable.box_green)
-                2 -> drawable.setColor(Color.RED) //holder.colorTextView.setBackgroundResource(R.drawable.box_red)
+                2 -> drawable.setColor(Color.RED)
                 3 -> holder.colorTextView.setBackgroundResource(R.drawable.box_yellow)
                 4 -> holder.colorTextView.setBackgroundResource(R.drawable.box_pink)
                 5 -> holder.colorTextView.setBackgroundResource(R.drawable.box_purple)
@@ -88,10 +82,6 @@ class EventSlidePageFragment: Fragment() {
                     if (position == RecyclerView.NO_POSITION) {
                         return@setOnClickListener
                     }
-                    //val event = events[position]
-                    // From the list with only original events, find event that matches eventKey with event from properList
-                    //val dEvent: Event? = oEvents.find { it.eventKey == events[position].eventKey }
-                    //val dEvent: Event? = events.find { it.eventKey == events[com.mp.yourcalendar.ui.home.EventsAdapter.position].eventKey }
                     val dEvent: Event? = originalEvents.find {it.eventKey == events[position].eventKey }
                     val action: NavDirections = HomeFragmentDirections.actionNavHomeToEventDetailFragment(dEvent!!)
                     findNavController().navigate(action)

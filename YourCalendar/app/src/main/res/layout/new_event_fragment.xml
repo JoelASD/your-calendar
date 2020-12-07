@@ -89,7 +89,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textSize="20sp"
-                        android:text="End:" />
+                        android:text="@string/newEventTextViewEnd" />
 
                     <Button
                         android:id="@+id/newEventEndDateButton"
@@ -99,7 +99,7 @@
                         android:textColor="@color/black"
                         android:backgroundTint="#00FFFFFF"
                         android:textSize="16sp"
-                        android:text="13.13.2020" />
+                        android:text="@string/newEventEndDateButton" />
 
                     <Button
                         android:id="@+id/newEventEndTimeButton"
@@ -108,7 +108,7 @@
                         android:layout_weight="1.5"
                         android:textColor="@color/black"
                         android:backgroundTint="#00FFFFFF"
-                        android:text="12:00"
+                        android:text="@string/newEventEndTimeButton"
                         android:textSize="16sp" />
 
                 </LinearLayout>
@@ -135,7 +135,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Type" />
+                            android:text="@string/newEventTypeTextView" />
 
                         <Spinner
                             android:id="@+id/newEventTypeSpinner"
@@ -156,7 +156,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Repeating" />
+                            android:text="@string/newEventRepeating" />
 
                         <Spinner
                             android:id="@+id/newEventRepeatSpinner"
@@ -186,7 +186,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="Description"
+                    android:hint="@string/newEventHintDescription"
                     android:inputType="textMultiLine"
                     android:textSize="16sp"
                     android:maxLines="4"
@@ -208,7 +208,7 @@
                         android:layout_weight="6"
                         android:inputType="text"
                         android:drawableEnd="@drawable/ic_baseline_location_searching_test_24"
-                        android:hint="Address and/or city" />
+                        android:hint="@string/newEventHintLocationDescription" />
 
                 </LinearLayout>
 
@@ -217,7 +217,7 @@
                     android:layout_width="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_height="wrap_content"
-                    android:text="Click location to use:"
+                    android:text="@string/newEventChooseLocationTextView"
                     android:visibility="gone" />
 
                 <LinearLayout
@@ -250,7 +250,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"
-                    android:text="Add notification"
+                    android:text="@string/newEventAddNotificationButtonString"
                     android:textColor="@color/white"/>
 
             </LinearLayout>
@@ -263,7 +263,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_gravity="center_horizontal"
-                android:text="Add event"
+                android:text="@string/newEventCreateButtonString"
                 android:textColor="@color/white"/>
 
         </LinearLayout>

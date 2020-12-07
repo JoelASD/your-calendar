@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_gravity="center"
-        android:text="Nothing planned today :)"
+        android:text="@string/nothingPlanned"
         android:visibility="gone"/>
     <TextView
         android:id="@+id/empty_view_not_logged"
@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_gravity="center"
-        android:text="You need to login, to see your events!"
+        android:text="@string/LogInTextView"
         android:visibility="gone"/>
 
 </LinearLayout>

@@ -35,11 +35,58 @@
     <string name="addNotificationButton">X</string>
     <string name="addNotificationTime">Time:</string>
 
+    //widgetItem
+    <string name="widgetTest">Meeting with John</string>
+
+    //eventItem
+    <string name="itemTest">TextView</string>
+
+    //appwidget
+    <string name="nothingPlanned">Nothing planned today :)</string>
+    <string name="LogInTextView">You need to login, to see your events!</string>
+
     //new Event Fragment
     <string name="newEventNameHint">Name</string>
     <string name="newEventTextStart">Start:</string>
     <string name="newEventStartDateButton">13.3.2020</string>
     <string name="newEventStartTimeButton">12:00</string>
+    <string name="newEventTextViewEnd">End:</string>
+    <string name="newEventEndDateButton">13.13.2020:</string>
+    <string name="newEventEndTimeButton">12:00</string>
+    <string name="newEventTypeTextView">Type</string>
+    <string name="newEventRepeating">Repeating</string>
+    <string name="newEventHintDescription">Description</string>
+    <string name="newEventHintLocationDescription">Address and/or city</string>
+    <string name="newEventChooseLocationTextView">Click location to use:</string>
+    <string name="newEventAddNotificationButtonString">Add notification</string>
+    <string name="newEventCreateButtonString">Add event</string>
+
+    //homeFragment
+    <string name="homeFragmentCreateEvent">Create new event</string>
+
+    //event edit
+    <string name="editEventNameEditTextHint">Name</string>
+    <string name="editEventStart">Start:</string>
+    <string name="editEventStartButton">13.3.2020</string>
+    <string name="editEventStartTimeButton">12:00</string>
+    <string name="editEventEndDateButton">13.13.2020</string>
+    <string name="editEventEndTimeButton">12:00</string>
+    <string name="editEventType">Type</string>
+    <string name="editEventRepeating">Repeating</string>
+    <string name="editEventDescriptionEditTextHint">Description</string>
+    <string name="editEventLocationEditTextHint">Address and/or city</string>
+    <string name="editChooseLocationTextView">Click location to use:</string>
+    <string name="editEventAddNotificationButton">Add notification</string>
+    <string name="editEventSaveButton">Save changes</string>
+
+    //fragment event
+    <string name="locationTextView">location</string>
+    <string name="humidityTextView">humidity</string>
+    <string name="temperatureTextView">temperature</string>
+    <string name="NotificationsTextView">Notifications:</string>
+    <string name="editEventButtonString">Edit</string>
+    <string name="deleteEventButtonString">Delete</string>
+    <string name="conditionTextView">condition</string>
 
     <string-array name="repeat_array">
         <item>No repeat</item>

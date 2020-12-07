@@ -34,6 +34,7 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
     private var todayEventsList = mutableListOf<Event>()
 
     // Firebase
+    //We use Firebase to only get the events.
     private lateinit var auth: FirebaseAuth
     private lateinit var ref: DatabaseReference
 
@@ -49,8 +50,6 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
         val justADateString = weekday.format(Date())
         //checking daytime
         val daytime = SimpleDateFormat("HH:mm")
-
-
 
         // Listener for users data, runs at activity created and when data is changed
         ref.addValueEventListener(object : ValueEventListener {
@@ -75,7 +74,6 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
                 val appWidgetManager = context.getSystemService(AppWidgetManager::class.java)
                 appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.listView)
             }
-
             override fun onCancelled(error: DatabaseError) {
                 Log.d("Database Error", "Error in DB ValueEventListener. ${error.toException()}")
             }
@@ -84,17 +82,9 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
 
 
     override fun onDataSetChanged() {
-        // This is triggered when you call AppWidgetManager notifyAppWidgetViewDataChanged
-        // on the collection view corresponding to this factory. You can do heaving lifting in
-        // here, synchronously. For example, if you need to process an image, fetch something
-        // from the network, etc., it is ok to do it here, synchronously. The widget will remain
-        // in its current state while work is being done here, so you don't need to worry about
-        // locking up the widget.
     }
 
     override fun onDestroy() {
-        // In onDestroy() you should tear down anything that was setup for your data source,
-        // eg. cursors, connections, etc.
         events.clear()
     }
 
@@ -107,20 +97,6 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
         Log.d("EventWidgetService", "$position: ${event.eventName}")
         val rv = RemoteViews(context.packageName, R.layout.event_widget_item)
         rv.setTextViewText(R.id.eventTextView, event.eventName)
-
-      /*  if (position % 2 == 1) {
-
-            //rv.setInt(R.id.linearLayoutWidgetList, "setBackgroundColor", R.color.html_light_grey)
-            rv.setInt(R.id.linearLayoutWidgetList, "setBackgroundColor", Color.WHITE)
-            rv.setInt(R.id.eventTextView, "setTextColor", Color.DKGRAY)
-            rv.setInt(R.id.eventDateTextView, "setTextColor", Color.DKGRAY)
-
-        } else {
-            rv.setInt(R.id.eventTextView, "setTextColor", Color.DKGRAY)
-            rv.setInt(R.id.eventDateTextView, "setTextColor", Color.DKGRAY)
-        }
-
-       */
         rv.setInt(R.id.eventTextView, "setTextColor", Color.DKGRAY)
         rv.setInt(R.id.eventDateTextView, "setTextColor", Color.DKGRAY)
         //Event type coloring
@@ -139,23 +115,10 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
         val dateParser = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ROOT)
         val startDate = dateParser.parse("${event.eventStartDate} ${event.eventStartTime}")!!
         val endDate = dateParser.parse("${event.eventEndDate} ${event.eventEndTime}")!!
-
         // Date -> String
         val weekDayFormatter = SimpleDateFormat("E", Locale.getDefault())
         val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-
-        //For displaying the time. Checking if the event if going to the next day and if its for the whole day
-        //currently breaking the sort list
-      /**  if(event.eventStartDate != event.eventEndDate) {
-            rv.setTextViewText(R.id.eventDateTextView, "23:59")
-        } else if (event.eventStartTime == "00:00" && event.eventEndTime == "23:59") {
-            rv.setTextViewText(R.id.eventDateTextView, "Whole day")
-        } else {
-            rv.setTextViewText(R.id.eventDateTextView, "${weekDayFormatter.format(startDate)} ${timeFormatter.format(startDate)} - ${timeFormatter.format(endDate)}")
-        } **/
-
         rv.setTextViewText(R.id.eventDateTextView, "${weekDayFormatter.format(startDate)} ${timeFormatter.format(startDate)} - ${timeFormatter.format(endDate)}")
-
         return rv
     }
 
@@ -179,21 +142,16 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
 
     //To compare Time of the event and change the order in the List
     fun putInOrder(list: MutableList<Event>, date: String) {
-        Log.d("putOrder", "in putOrder")
         for(e in list) {
-            Log.d("ListWidget", "${e.eventStartDate}, $date")
             if(e.eventStartDate == date) {
-                Log.d("ListWidget2", "add todayEvent")
                 todayEventsList.add(e)
             }
         }
         for(pos in 1 until todayEventsList.size) {
-            Log.d("ListWidget3", "${todayEventsList}")
             val sTimePart: List<String> = list[pos].eventStartTime.split(":")
             for(item in todayEventsList) {
                 val sTimePart2: List<String> = item.eventStartTime.split(":")
                 if(LocalTime.of(sTimePart[0].toInt(), sTimePart[1].toInt()).isBefore(LocalTime.of(sTimePart2[0].toInt(), sTimePart2[1].toInt()))) {
-                    Log.d("sortList", "${sTimePart2[0]},${sTimePart2[1]} ")
                     Collections.swap(todayEventsList, pos - 1, pos )
                 }
             }
@@ -201,14 +159,11 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
     }
 
     /*
-    *
     * Loops through list and creates "new events" with proper dates and times
     * according to multi day events lengths (start date - end date).
     * These created events are only used in the home fragment calendar.
     * Never saved into DB.
-    *
     * Returns list with added events for multi day entries
-    *
      */
     private fun multipleDayEvents(list: MutableList<Event>): MutableList<Event> {
         val modifiedList: MutableList<Event> = mutableListOf()
@@ -221,11 +176,9 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
                 var sDate: LocalDate = LocalDate.parse(e.eventStartDate, formatter)
                 var eDate: LocalDate = LocalDate.parse(e.eventEndDate, formatter)
                 val period = sDate.until(eDate)
-
                 // helpers
                 val newStartTime = "00:00"
                 val newEndTime = "23:59"
-
                 // Create events according to days between start and end
                 for(i in 1 until period.days){
                     // Next day
@@ -247,9 +200,7 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
         }
         return modifiedList
     }
-
     /*
-    *
     * Gets list with multi day events already added. Looks for events
     * with that have repeating set. Creates repeat events accordingly.
     * These created events are only used in the home fragment calendar.
@@ -260,7 +211,6 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
     private fun addRepeats(originalEvents: MutableList<Event>): MutableList<Event>{
         val listWithRepeats: MutableList<Event> = mutableListOf()
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-
         for (e in originalEvents) {
             val sDate: LocalDate = LocalDate.parse(e.eventStartDate, formatter)
             val eDate: LocalDate = LocalDate.parse(e.eventEndDate, formatter)
@@ -324,7 +274,6 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
         }
         return listWithRepeats
     }
-
     // Parse new date and time for notification
     private fun parseAndSetNewDT(dt: LocalDate): String {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")

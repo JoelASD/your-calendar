@@ -22,7 +22,7 @@
         android:layout_marginBottom="2dp"
         android:layout_gravity="center"
         android:background="@drawable/box_red"
-        android:layout_marginRight="6dp"
+        android:layout_marginEnd="6dp"
         android:text="" />
 
     <LinearLayout
@@ -34,15 +34,15 @@
             android:id="@+id/itemNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textSize="20dp"
+            android:text="@string/itemTest"
+            android:textSize="20sp"
             tools:text="Meeting with friend" />
 
         <TextView
             android:id="@+id/itemTimeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:text="@string/itemTest"
             tools:text="12:30" />
 
     </LinearLayout>
