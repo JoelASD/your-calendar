@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.view.iterator
 import androidx.navigation.NavDirections
@@ -470,6 +471,7 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
     // Finalize edited event and it to DB
     private fun saveEvent() {
+        closekb()
         val name = editEventNameEditText.text.trim().toString()
         val desc =
                 if (editEventDescriptionEditText.text.trim().isNotEmpty()) editEventDescriptionEditText.text.trim().toString()
@@ -569,6 +571,16 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             //Schedule
             val manager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+timeTo, pending)
+        }
+    }
+
+    private fun closekb() {
+        val activity = requireActivity()
+
+        val view = activity.currentFocus
+        if (view != null) {
+            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0)
         }
     }
 

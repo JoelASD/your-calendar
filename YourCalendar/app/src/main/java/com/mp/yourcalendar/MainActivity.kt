@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         // Initialize FirebaseAuth instance
         auth = FirebaseAuth.getInstance()
 
-        //
+        // Creates notification channel if it hasn't been created yet
         createNotifChannel()
 
         // Set database reference
@@ -84,7 +84,6 @@ class MainActivity : AppCompatActivity() {
                     event?.eventKey = e.key
                     newEventList.add(event!!)
                 }
-                Log.d("DATABASE", "Users data was accessed")
                 // Update eventList in activityViewModel
                 viewModel.setEventList(newEventList, newKeyList)
             }
@@ -132,13 +131,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Go to login/registering
-    fun startAuthActivity(){
+    private fun startAuthActivity(){
         var intent = Intent(this, AuthActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
     }
 
     // Sign out current auth user
-    fun logout(){
+    private fun logout(){
         auth.signOut()
         startAuthActivity()
     }

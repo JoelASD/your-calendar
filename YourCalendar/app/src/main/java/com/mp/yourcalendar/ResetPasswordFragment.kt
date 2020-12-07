@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.fragment_reset_password.*
 
 class ResetPasswordFragment : Fragment() {
 
@@ -23,7 +24,7 @@ class ResetPasswordFragment : Fragment() {
         val forgotPasswordView = inflater.inflate(R.layout.fragment_reset_password, container, false)
 
         // Get/listen to toLogInButton, set action
-        val toLogInButton = forgotPasswordView.findViewById<View>(R.id.exitResetPasswordButton) as Button
+        /*val toLogInButton = forgotPasswordView.findViewById<View>(R.id.exitResetPasswordButton) as Button
         toLogInButton.setOnClickListener {
             changeFragment(LogInFragment()) // Go to login
         }
@@ -42,32 +43,48 @@ class ResetPasswordFragment : Fragment() {
                 emailInput.setError("Must give email!")
                 emailInput.requestFocus()
             }
-        }
+        }*/
 
         return forgotPasswordView
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        exitResetPasswordButton.setOnClickListener {
+            changeFragment(LogInFragment())
+        }
+
+        resetPasswordButton.setOnClickListener {
+            if (resetEmailEditText.text.trim().isNotEmpty()) {
+                resetPassword(resetEmailEditText.text.trim().toString())
+            } else {
+                resetEmailEditText.requestFocus()
+                resetEmailEditText.error = "Enter your account email!"
+            }
+        }
+    }
+
     // reset password
-    fun resetPassword(email: String){
+    private fun resetPassword(email: String){
         Firebase.auth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
                 if(task.isSuccessful){
                     // Email sent
-                    Toast.makeText(activity!!, "Email sent!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireActivity(), "Email sent!", Toast.LENGTH_LONG).show()
+                    changeFragment(LogInFragment())
                 } else {
                     //TODO: proper error handling
-                    //Toast.makeText(activity!!, "No account found with that email", Toast.LENGTH_LONG).show()
-                    emailInput.setError("This email has not been registered.")
-                    emailInput.requestFocus()
-
+                    resetEmailEditText.setError("This email has not been registered.")
+                    resetEmailEditText.requestFocus()
                 }
             }
     }
 
     // Handle fragment change to login, etc....
-    fun changeFragment(fragment: Fragment){
+    private fun changeFragment(fragment: Fragment){
         // Setup
-        val fragmentManager = activity!!.supportFragmentManager
+        val fragmentManager = requireActivity().supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
 
         // Transaction

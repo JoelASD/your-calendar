@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.iterator
@@ -464,6 +465,7 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
     }
 
     private fun saveEvent() {
+        closekb()
         val UID = Firebase.auth.uid
         if (UID != null) {
             database.child("users").child(UID).push()
@@ -516,5 +518,15 @@ class NewEventFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePic
         //Schedule
         val manager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+timeTo, pending)
+    }
+
+    private fun closekb() {
+        val activity = requireActivity()
+
+        val view = activity.currentFocus
+        if (view != null) {
+            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0)
+        }
     }
 }

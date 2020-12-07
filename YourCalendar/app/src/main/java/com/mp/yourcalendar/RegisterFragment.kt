@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.fragment_register.*
 
 
 class RegisterFragment : Fragment() {
@@ -44,7 +45,7 @@ class RegisterFragment : Fragment() {
         //auth = FirebaseAuth.getInstance()
 
         // Get/listen to toLogInButton, set action
-        val toLogInButton = registerView.findViewById<View>(R.id.toLogInButton) as Button
+        /*val toLogInButton = registerView.findViewById<View>(R.id.toLogInButton) as Button
         toLogInButton.setOnClickListener {
             changeFragment(LogInFragment()) // Go to login
         }
@@ -75,25 +76,50 @@ class RegisterFragment : Fragment() {
                 //TODO: proper error
                 Toast.makeText(activity!!, "All fields must be filled!", Toast.LENGTH_LONG).show()
             }
-        }
+        }*/
 
         return registerView
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        toLogInButton.setOnClickListener {
+            changeFragment(LogInFragment())
+        }
+
+        registerButton.setOnClickListener {
+            val email = registrationEmailEditText.text.trim().toString()
+            val pwd = registrationPasswordEditText.text.trim().toString()
+            val pwdrepeat = registrationRepeatPasswordEditText.text.trim().toString()
+            //check if all inputs are given
+            if (email.isNotEmpty() && pwd.isNotEmpty() && pwdrepeat.isNotEmpty()) {
+                if (pwd == pwdrepeat) {
+                    createAccount(email, pwd)
+                } else {
+                    Toast.makeText(requireContext(), "Passwords do not match!", Toast.LENGTH_LONG).show()
+                }
+            } else {
+                Toast.makeText(requireContext(), "All fields must be filled!", Toast.LENGTH_SHORT).show()
+                if (registrationEmailEditText.text.trim().isEmpty()) registrationEmailEditText.error = "Enter email"
+                if (registrationPasswordEditText.text.trim().isEmpty()) registrationPasswordEditText.error = "Enter password"
+                if (registrationRepeatPasswordEditText.text.trim().isEmpty()) registrationRepeatPasswordEditText.error = "Repeat password"
+            }
+        }
+    }
+
     // Handle fragment change to login, etc....
-    fun changeFragment(fragment: Fragment){
+    private fun changeFragment(fragment: Fragment){
         // Setup
-        val fragmentManager = activity!!.supportFragmentManager
+        val fragmentManager = requireActivity().supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
 
         // Transaction
         val transaction = fragmentTransaction
-        transaction.replace(R.id.authFragmentFrame, fragment) // set new fragment to authFragmentFrame
-        transaction.disallowAddToBackStack() //TODO: see if we should allow backstack?
+        transaction.replace(R.id.authFragmentFrame, fragment)
+        transaction.disallowAddToBackStack()
         transaction.commit()
     }
 
-    fun createAccount(email: String, password: String){
+    private fun createAccount(email: String, password: String){
         Firebase.auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if(task.isSuccessful){
@@ -102,46 +128,40 @@ class RegisterFragment : Fragment() {
                     //create users node to DB
                     createUserNodeToDB()
                     // Start MainActivity
-                    var intent = Intent(activity!!, MainActivity::class.java)
+                    var intent = Intent(requireActivity(), MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     startActivity(intent)
                 } else {
-                    //TODO: more error handling
                     try {
                         throw task.exception!!
                     } catch (e: FirebaseAuthUserCollisionException) {
-                        //Toast.makeText(activity!!, "Email is already registered", Toast.LENGTH_LONG).show()
-                        emailInput.requestFocus()
-                        emailInput.setError("Email already in use")
+                        Toast.makeText(requireActivity(), "Email is already registered", Toast.LENGTH_LONG).show()
+                        registrationEmailEditText.requestFocus()
+                        registrationEmailEditText.setError("Email already in use")
                     } catch (e: FirebaseAuthWeakPasswordException) {
-                        // TODO: set psw regs
-                        //Toast.makeText(activity!!, "Password too weak!", Toast.LENGTH_LONG).show()
-                        passwordInput.text.clear()
-                        passwordInput.setError("Password too weak")
-                        repeatPasswordInput.text.clear()
-                        repeatPasswordInput.setError("Password too weak")
-                        passwordInput.requestFocus()
+                        Toast.makeText(requireActivity(), "Password too weak!", Toast.LENGTH_LONG).show()
+                        registrationPasswordEditText.text.clear()
+                        registrationPasswordEditText.setError("Password too weak")
+                        registrationRepeatPasswordEditText.text.clear()
+                        registrationPasswordEditText.requestFocus()
                     } finally {
-                        Toast.makeText(activity!!, "Registration failed", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireActivity(), "Registration failed", Toast.LENGTH_LONG).show()
                     }
                 }
             }
     }
 
-    fun sendVerificationEmail() {
+    private fun sendVerificationEmail() {
         var user = Firebase.auth.currentUser
         user!!.sendEmailVerification()
             .addOnCompleteListener { task ->
                 if(task.isSuccessful){
-                    // Email sent properly
-                    Toast.makeText(activity!!, "Verification email sent!", Toast.LENGTH_LONG).show()
-                } else {
-                    //TODO: better error handling
-                    Toast.makeText(activity!!, "Could not send verification email", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireActivity(), "Verification email sent!", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
-    fun createUserNodeToDB(){
+    private fun createUserNodeToDB(){
         val userUID = Firebase.auth.uid
         database = Firebase.database.reference
         //val database: FirebaseDatabase = FirebaseDatabase.getInstance()
