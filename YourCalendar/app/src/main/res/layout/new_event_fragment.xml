@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.newevent.NewEventFragment"
-    android:background="@drawable/mainbg_test">
+    android:background="@color/html_light_grey">
 
     <ScrollView
         app:layout_constraintStart_toStartOf="parent"
@@ -19,19 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Add new event"
-                android:textSize="25sp"
-                android:shadowColor="#bac7be"
-                android:shadowDx="4"
-                android:shadowDy="4"
-                android:shadowRadius="4"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -50,7 +37,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="Name"
+                    android:hint="@string/newEventNameHint"
                     android:inputType="text"
                     android:textSize="20sp"/>
 
@@ -65,7 +52,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Start:"
+                        android:text="@string/newEventTextStart"
                         android:textSize="20sp" />
 
                     <Button
@@ -75,7 +62,7 @@
                         android:layout_weight="2"
                         android:textColor="@color/black"
                         android:backgroundTint="#00FFFFFF"
-                        android:text="13.3.2020"
+                        android:text="@string/newEventStartDateButton"
                         android:textSize="16sp" />
 
                     <Button
@@ -85,7 +72,7 @@
                         android:layout_weight="1.5"
                         android:textColor="@color/black"
                         android:backgroundTint="#00FFFFFF"
-                        android:text="12:00"
+                        android:text="@string/newEventStartTimeButton"
                         android:textSize="16sp" />
 
                 </LinearLayout>
@@ -223,15 +210,6 @@
                         android:drawableEnd="@drawable/ic_baseline_location_searching_test_24"
                         android:hint="Address and/or city" />
 
-                    <!--<Button
-                        android:id="@+id/searchLocButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.1"
-                        android:layout_marginStart="4dp"
-                        android:background="@drawable/circle_button_test"
-                        android:text="Q" /> -->
-
                 </LinearLayout>
 
                 <TextView
@@ -272,7 +250,8 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"
-                    android:text="Add notification" />
+                    android:text="Add notification"
+                    android:textColor="@color/white"/>
 
             </LinearLayout>
 
@@ -284,7 +263,8 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_gravity="center_horizontal"
-                android:text="Add event" />
+                android:text="Add event"
+                android:textColor="@color/white"/>
 
         </LinearLayout>
 

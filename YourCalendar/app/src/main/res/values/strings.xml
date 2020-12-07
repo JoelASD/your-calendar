@@ -31,6 +31,16 @@
     
     <string name="newEventButton">Create new event</string>
 
+    //add notification
+    <string name="addNotificationButton">X</string>
+    <string name="addNotificationTime">Time:</string>
+
+    //new Event Fragment
+    <string name="newEventNameHint">Name</string>
+    <string name="newEventTextStart">Start:</string>
+    <string name="newEventStartDateButton">13.3.2020</string>
+    <string name="newEventStartTimeButton">12:00</string>
+
     <string-array name="repeat_array">
         <item>No repeat</item>
         <item>Once a week</item>

@@ -11,9 +11,11 @@
             android:title="Your Calendar" />
         <item
             android:id="@+id/nav_weekly_view"
+            android:icon="@drawable/ic_calendar_icon_24"
             android:title="Week View" />
         <item
             android:id="@+id/nav_monthly_view"
+            android:icon="@drawable/ic_calendar_icon_24"
             android:title="Monthly View" />
         <item
             android:id="@+id/nav_new_event"

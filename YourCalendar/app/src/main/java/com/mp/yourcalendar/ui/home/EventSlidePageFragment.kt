@@ -3,6 +3,7 @@ package com.mp.yourcalendar.ui.home
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,9 @@ import com.mp.yourcalendar.Event
 import com.mp.yourcalendar.R
 import kotlinx.android.synthetic.main.event_item.view.*
 import kotlinx.android.synthetic.main.event_list.*
+import java.time.LocalTime
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * This Fragment is for showing the events of a day
@@ -95,4 +99,6 @@ class EventSlidePageFragment: Fragment() {
             }
         }
     }
+
+
 }

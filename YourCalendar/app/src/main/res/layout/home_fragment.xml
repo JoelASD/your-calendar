@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".ui.home.HomeFragment"
+    android:background="@color/html_light_grey">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,12 +16,11 @@
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_height="320dp"
             android:background="@drawable/boxbg_test"
-            android:elevation="8dp">
+            app:mcv_calendarMode="month"
+            app:mcv_selectionColor="#636363"
+            app:mcv_showOtherDates="all"
 
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
                 android:id="@+id/calendarView"

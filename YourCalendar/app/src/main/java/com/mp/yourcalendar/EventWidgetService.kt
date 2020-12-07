@@ -108,15 +108,21 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
         val rv = RemoteViews(context.packageName, R.layout.event_widget_item)
         rv.setTextViewText(R.id.eventTextView, event.eventName)
 
-        if (position % 2 == 1) {
+      /*  if (position % 2 == 1) {
+
+            //rv.setInt(R.id.linearLayoutWidgetList, "setBackgroundColor", R.color.html_light_grey)
             rv.setInt(R.id.linearLayoutWidgetList, "setBackgroundColor", Color.WHITE)
             rv.setInt(R.id.eventTextView, "setTextColor", Color.DKGRAY)
             rv.setInt(R.id.eventDateTextView, "setTextColor", Color.DKGRAY)
+
         } else {
-            rv.setInt(R.id.linearLayoutWidgetList, "setBackgroundColor", Color.LTGRAY)
-            rv.setInt(R.id.eventTextView, "setTextColor", Color.WHITE)
-            rv.setInt(R.id.eventDateTextView, "setTextColor", Color.WHITE)
+            rv.setInt(R.id.eventTextView, "setTextColor", Color.DKGRAY)
+            rv.setInt(R.id.eventDateTextView, "setTextColor", Color.DKGRAY)
         }
+
+       */
+        rv.setInt(R.id.eventTextView, "setTextColor", Color.DKGRAY)
+        rv.setInt(R.id.eventDateTextView, "setTextColor", Color.DKGRAY)
         //Event type coloring
         when (event.eventType) {
             0 -> rv.setInt(R.id.colorTextView, "setBackgroundResource", R.drawable.box_blue)
@@ -137,13 +143,19 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
         // Date -> String
         val weekDayFormatter = SimpleDateFormat("E", Locale.getDefault())
         val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+        //For displaying the time. Checking if the event if going to the next day and if its for the whole day
+        //currently breaking the sort list
+      /**  if(event.eventStartDate != event.eventEndDate) {
+            rv.setTextViewText(R.id.eventDateTextView, "23:59")
+        } else if (event.eventStartTime == "00:00" && event.eventEndTime == "23:59") {
+            rv.setTextViewText(R.id.eventDateTextView, "Whole day")
+        } else {
+            rv.setTextViewText(R.id.eventDateTextView, "${weekDayFormatter.format(startDate)} ${timeFormatter.format(startDate)} - ${timeFormatter.format(endDate)}")
+        } **/
+
         rv.setTextViewText(R.id.eventDateTextView, "${weekDayFormatter.format(startDate)} ${timeFormatter.format(startDate)} - ${timeFormatter.format(endDate)}")
 
-      /**  holder.startDateTimeText.text =
-            if (e.eventStartDate != e.eventEndDate) "${e.eventStartTime} - 23:59"
-            else if (e.eventStartTime == "00:00" && e.eventEndTime == "23:59") "Whole day"
-            else "${e.eventStartTime} - ${e.eventEndTime}"
-**/
         return rv
     }
 
@@ -169,20 +181,20 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
     fun putInOrder(list: MutableList<Event>, date: String) {
         Log.d("putOrder", "in putOrder")
         for(e in list) {
-            Log.d("ListWidget", "${e.eventStartDate}, ${date}")
+            Log.d("ListWidget", "${e.eventStartDate}, $date")
             if(e.eventStartDate == date) {
                 Log.d("ListWidget2", "add todayEvent")
                 todayEventsList.add(e)
             }
         }
         for(pos in 1 until todayEventsList.size) {
-            Log.d("ListWidget3", "in for lopp todaysEvent")
+            Log.d("ListWidget3", "${todayEventsList}")
             val sTimePart: List<String> = list[pos].eventStartTime.split(":")
             for(item in todayEventsList) {
                 val sTimePart2: List<String> = item.eventStartTime.split(":")
                 if(LocalTime.of(sTimePart[0].toInt(), sTimePart[1].toInt()).isBefore(LocalTime.of(sTimePart2[0].toInt(), sTimePart2[1].toInt()))) {
+                    Log.d("sortList", "${sTimePart2[0]},${sTimePart2[1]} ")
                     Collections.swap(todayEventsList, pos - 1, pos )
-                    break
                 }
             }
         }
