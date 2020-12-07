@@ -23,18 +23,5 @@ class NotificationReceiver : BroadcastReceiver() {
             Log.d("RECEIVER", "NOTIF BUILD")
             notify(1, builder.build())
         }
-
-        //.setContentTitle(intent.getStringExtra("title", ""))
-        //.setContentText(intent.getStringExtra("text", ""))
-        /*val notification: Notification = NotificationCompat.Builder(context)
-            .setSmallIcon(R.drawable.ic_calendar_icon_24)
-            .setContentTitle("Title")
-            .setContentText("TEXTIA")
-            .build()
-        // Show built notification
-        //val manager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        Log.d("RECEIVER", "NOTIF BUILD")
-        val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(42, notification)*/
     }
 }

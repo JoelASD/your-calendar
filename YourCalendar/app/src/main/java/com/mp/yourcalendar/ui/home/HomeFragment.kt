@@ -1,7 +1,6 @@
 package com.mp.yourcalendar.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,18 +11,14 @@ import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.mp.yourcalendar.Event
-import com.mp.yourcalendar.MainActivity
 import com.mp.yourcalendar.R
-import com.mp.yourcalendar.ui.newevent.NewEventFragmentDirections
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.CalendarMode
 import kotlinx.android.synthetic.main.home_fragment.*
 import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalAmount
 import java.util.*
 
 

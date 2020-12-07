@@ -1,11 +1,9 @@
 package com.mp.yourcalendar
 
 import android.app.AlarmManager
-import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -25,19 +23,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
-import com.mp.yourcalendar.ui.newevent.NewEventFragmentDirections
 import kotlinx.android.synthetic.main.fragment_event_detail.*
-import kotlinx.android.synthetic.main.new_event_fragment.*
 import org.json.JSONObject
 import java.lang.Exception
 
@@ -51,7 +44,6 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
     private val args: EventDetailFragmentArgs by navArgs<EventDetailFragmentArgs>()
 
     private lateinit var gMap: GoogleMap
-    private lateinit var gMapView: MapView
 
     // Weather
     private lateinit var locTemperature: String
