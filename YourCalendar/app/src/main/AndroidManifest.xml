@@ -36,6 +36,10 @@
             </intent-filter>
         </activity>
 
+        <receiver
+            android:name=".NotificationReceiver"
+            android:enabled="true" />
+
         <service
             android:name=".EventWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />

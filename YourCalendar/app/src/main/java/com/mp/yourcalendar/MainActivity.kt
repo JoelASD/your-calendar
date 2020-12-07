@@ -1,6 +1,10 @@
 package com.mp.yourcalendar
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +13,7 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -21,8 +26,10 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.mp.yourcalendar.ui.home.HomeFragment
+import com.mp.yourcalendar.ui.home.HomeFragmentDirections
 import com.mp.yourcalendar.ui.home.activityViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -61,6 +68,9 @@ class MainActivity : AppCompatActivity() {
         // Initialize FirebaseAuth instance
         auth = FirebaseAuth.getInstance()
 
+        // Creates notification channel if it hasn't been created yet
+        createNotifChannel()
+
         // Set database reference
         ref = FirebaseDatabase.getInstance().getReference("users").child(auth.uid.toString())
         // Listener for users data, runs at activity created and when data is changed
@@ -74,7 +84,6 @@ class MainActivity : AppCompatActivity() {
                     event?.eventKey = e.key
                     newEventList.add(event!!)
                 }
-                Log.d("DATABASE", "Users data was accessed")
                 // Update eventList in activityViewModel
                 viewModel.setEventList(newEventList, newKeyList)
             }
@@ -91,12 +100,12 @@ class MainActivity : AppCompatActivity() {
         }
         navView.menu.findItem(R.id.nav_weekly_view).setOnMenuItemClickListener {
             viewModel.changeCalendarView(2)
-            navView.menu.close()
+            drawer_layout.closeDrawers()
             true
         }
         navView.menu.findItem(R.id.nav_monthly_view).setOnMenuItemClickListener {
             viewModel.changeCalendarView(1)
-            navView.menu.close()
+            drawer_layout.closeDrawers()
             true
         }
 
@@ -122,20 +131,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Go to login/registering
-    fun startAuthActivity(){
+    private fun startAuthActivity(){
         var intent = Intent(this, AuthActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
     }
 
     // Sign out current auth user
-    fun logout(){
+    private fun logout(){
         auth.signOut()
         startAuthActivity()
     }
 
-    // When valueEventListener is triggered and data in activityViewModel is updated with this
-    /*fun databaseLoaded(list: MutableList<Event>) {
-        Log.d("LOADED", "MAIN ACTIVITY: DATABASE LOADED, ${list.size}")
-        viewModel.setEventList(list)
-    }*/
+    private fun createNotifChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Event notification"
+            val desc = "Shows notifications for events set by user"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("1", name, importance).apply {
+                description = desc
+            }
+            //val notificationManager: NotificationManager = this.context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager: NotificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
 }

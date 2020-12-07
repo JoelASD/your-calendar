@@ -8,9 +8,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.mp.yourcalendar.Event
+import com.mp.yourcalendar.MainActivity
 import com.mp.yourcalendar.R
+import com.mp.yourcalendar.ui.newevent.NewEventFragmentDirections
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.CalendarMode
 import kotlinx.android.synthetic.main.home_fragment.*
@@ -58,13 +62,6 @@ class HomeFragment : Fragment() {
             calendarCalendar.set(date.year, date.month, date.day)
             dateChecker.text = DateFormat.getDateInstance().format(calendarCalendar.time)
 
-            /*val d: String = date.toString()
-            val dateParts: List<String> = d.split("{" ,"}")
-            val dateParts2: List<String> = dateParts[1].split("-")
-            val chosenDate = formatDate(dateParts2[2].toInt(), dateParts2[1].toInt(), dateParts2[0].toInt())
-            //getDailyEvents(chosenDate)
-            dateChecker.text = chosenDate*/
-
             // We calculate the difference between today and the chosen date
             val calendar = Calendar.getInstance()
             calendar.time = Date()
@@ -79,39 +76,19 @@ class HomeFragment : Fragment() {
             //we Update the slider when we press on a date on the calendar
             viewPager.currentItem = Int.MAX_VALUE / 2 + offset
         }
+
+        // FAB listener
+        fab.setOnClickListener {
+            val action: NavDirections = HomeFragmentDirections.actionNavHomeToNavNewEvent()
+            findNavController().navigate(action)
+        }
     }
 
-    // Gets list of events and runs EventsAdapter with them to show in recyclerView
-    /*fun setupRecyclerView(events: MutableList<Event>){
-        recyclerView.layoutManager = LinearLayoutManager(this.context)
-        recyclerView.adapter = EventsAdapter(this, events, eventList)
-    }*/
-
-    /*
-    *   Gets date (from initCalendar() or calendarView being pressed)
-    *   Finds events with that date and runs setupRecyclerView() to
-    *   set those events into recyclerView
-     */
-    /*fun getDailyEvents(date: String){
-        val list: MutableList<Event> = mutableListOf()
-        for (event in properList){
-            if (event.eventStartDate == date) {
-                list.add(event)
-            }
-        }
-        setupRecyclerView(list)
-    }*/
-
-    // Gets current date and runs function to set events from that date to recyclerView
 
     //Viewpager Setup
-    fun initCalendar(){
+    private fun initCalendar(){
         // Sets markers to calendar days when there is events
         getDaysWithEvents()
-
-        // Gets current date and runs function to set events from that date to recyclerView
-        //val dateParts: List<String> = LocalDate.now().toString().split("-")
-        //getDailyEvents("${dateParts[2]}/${dateParts[1]}/${dateParts[0]}")
 
         val adapter = EventSlidePagerAdapter(requireActivity(), properList, eventList)
         viewPager.adapter = adapter
@@ -125,7 +102,7 @@ class HomeFragment : Fragment() {
                 val year = calendar.get(Calendar.YEAR)
                 val month = calendar.get(Calendar.MONTH)
                 val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-                calendarView.selectedDate = CalendarDay.from(year, month +1, dayOfMonth)
+                calendarView.selectedDate = CalendarDay.from(year, month+1, dayOfMonth)
                 val calendarCalendar = Calendar.getInstance()
                 calendarCalendar.set(year, month, dayOfMonth)
                 dateChecker.text = DateFormat.getDateInstance().format(calendarCalendar.time)
@@ -133,16 +110,8 @@ class HomeFragment : Fragment() {
         })
     }
 
-    /*
-    *   Changed a bit
-    *
-    *   Observes activityViewModels eventList for changes. When changes happen, updates own eventList.
-    *   But in the case of this app currently, only runs when HomeFragment is being opened. Since data in database
-    *   is changed only during user being in different fragments (eg. newEventFragment or eventDetailFragment).
-    *
-    *   That's why initCalendar() is ran at the end
-     */
-    fun observeDatabaseChange() {
+    // Observes properList in activityViewModel
+    private fun observeDatabaseChange() {
         viewModel.properList.observe(viewLifecycleOwner, Observer { newProperList ->
             if (properList != newProperList) {
                 properList.clear()
@@ -158,7 +127,7 @@ class HomeFragment : Fragment() {
     }
 
     // Switches calendar view mode
-    fun observeCalendarChange() {
+    private fun observeCalendarChange() {
         viewModel.calendarType.observe(viewLifecycleOwner, Observer { newViewInt ->
             when (newViewInt) {
                 1 -> calendarView.state().edit().setCalendarDisplayMode(CalendarMode.MONTHS).commit()
@@ -168,7 +137,7 @@ class HomeFragment : Fragment() {
     }
 
     // Iterates through properList to get dates, marks date that have events on calendar
-    fun getDaysWithEvents() {
+    private fun getDaysWithEvents() {
         val list: MutableCollection<CalendarDay> = mutableListOf()
         for (event in properList) {
             val dateParts: List<String> = event.eventStartDate.split("/")

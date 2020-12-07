@@ -1,7 +1,10 @@
 package com.mp.yourcalendar
 
+import android.app.AlarmManager
 import android.app.Notification
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -85,13 +88,11 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
 
         repeatTextView.text =
                 when(args.currentEvent.eventRepeat){
-                    0 -> "Not repeating"
-                    1 -> "Everyday"
-                    2 -> "Every weekday"
-                    3 -> "Once week"
-                    4 -> "Once a month"
-                    5 -> "Yearly"
-                    else -> "Couldn't retrieve repeat pattern"
+                    0 -> ""
+                    1 -> "Once week"
+                    2 -> "Once a month"
+                    3 -> "Yearly"
+                    else -> ""
                 }
 
         // Notifications
@@ -149,6 +150,7 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    // Load forecast
     private fun loadWeatherForecast(lat: String, lng: String){
         //url for loading
         //val url = "$API_LINK$city&APPID=$API_KEY&units=metric&lang=fi"
@@ -191,6 +193,7 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
         queue.add(jsonObjectRequest)
     }
 
+    // Show weather
     private fun setWeatherUI(){
         locationTextView.text = args.currentEvent.eventLocName
         temperatureTextView.text = locTemperature
@@ -206,6 +209,7 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
             .into(conditionImageView)
     }
 
+    // Add notification list info
     fun addNotificationViews(){
         if (args.currentEvent.eventNotificationList.size > 0) {
             for (item in args.currentEvent.eventNotificationList){
@@ -221,6 +225,7 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
 
     }
 
+    // Delete function
     private fun deleteEvent(key: String) {
         val UID = Firebase.auth.uid
         if (UID != null) {
@@ -230,6 +235,7 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
                     .removeValue()
                     .addOnCompleteListener{
                         if(it.isComplete){
+                            cancelNotifications(requireContext())
                             Toast.makeText(context, "Event was removed!", Toast.LENGTH_SHORT).show()
                             val action: NavDirections = EventDetailFragmentDirections.actionEventDetailToNavHome()
                             findNavController().navigate(action)
@@ -240,4 +246,35 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    // Cancel all notifications
+    private fun cancelNotifications(context: Context) {
+        // Loop through current events notifications and cancel them
+        for (notif in args.currentEvent.eventNotificationList) {
+            val title = args.currentEvent.eventName
+            val desc =
+                when(notif.type) {
+                    0 -> "$title has started!"
+                    1 -> "$title will start in 5 minutes!"
+                    2 -> "$title will start in 10 minutes!"
+                    3 -> "$title will start in 15 minutes!"
+                    4 -> "$title will start in 30 minutes!"
+                    5 -> "$title will start in 1 hour!"
+                    6 -> "$title will start in 2 hours!"
+                    7 -> "$title will start tomorrow!"
+                    8 -> "$title will start in a week!"
+                    9 -> "$title has ended."
+                    else -> ""
+                }
+
+            Log.d("ALARM", "Cancel NOTIF")
+            val intent = Intent(context, NotificationReceiver::class.java)
+            intent.putExtra("title", title)
+            intent.putExtra("description", desc)
+            val pending: PendingIntent = PendingIntent.getBroadcast(context, notif.rc!!, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+            // Cancel notification
+            val manager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            manager.cancel(pending)
+        }
+    }
 }

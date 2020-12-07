@@ -1,5 +1,6 @@
 package com.mp.yourcalendar
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
@@ -263,18 +264,12 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
         for (e in originalEvents) {
             val sDate: LocalDate = LocalDate.parse(e.eventStartDate, formatter)
             val eDate: LocalDate = LocalDate.parse(e.eventEndDate, formatter)
-            // 0=no repeat, 1=everyday, 2=every weekday, 3=weekly, 4=monthly, 5=yearly
+            // 0=no repeat, 1=weekly, 2=monthly, 3=yearly
             when(e.eventRepeat) {
                 0 -> {
                     listWithRepeats.add(e)
                 }
                 1 -> {
-                    listWithRepeats.add(e)
-                }
-                2 -> {
-                    listWithRepeats.add(e)
-                }
-                3 -> {
                     //Plus week for startDate and endDate (13 times the event, for ~3 months)
                     var newSD: LocalDate = sDate.plusWeeks(1)
                     var newED: LocalDate = eDate.plusWeeks(1)
@@ -291,7 +286,7 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
                     }
                     listWithRepeats.add(e)
                 }
-                4 -> {
+                2 -> {
                     // Plus month for startDate and endDate (12 times the event, for a year)
                     var newSD: LocalDate = sDate.plusMonths(1)
                     var newED: LocalDate = eDate.plusMonths(1)
@@ -308,7 +303,7 @@ class EventRemoteViewsFactory(private val context: Context, intent: Intent): Rem
                     }
                     listWithRepeats.add(e)
                 }
-                5 -> {
+                3 -> {
                     // Plus year for startDate and endDate (10 times the event, for 10 years)
                     var newSD: LocalDate = sDate.plusYears(1)
                     var newED: LocalDate = eDate.plusYears(1)

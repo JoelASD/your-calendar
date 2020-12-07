@@ -1,7 +1,11 @@
 package com.mp.yourcalendar
 
+import android.app.AlarmManager
 import android.app.DatePickerDialog
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -11,6 +15,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.view.iterator
 import androidx.navigation.NavDirections
@@ -27,6 +32,8 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import kotlin.random.Random
 
 class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
@@ -233,6 +240,9 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
     // Get set notifications and validate
     private fun validateNotifications(){
+        // First cancel old pending notifications
+        cancelNotifications(requireContext())
+
         val list: MutableList<Int> = mutableListOf()
 
         // Loop through items in notificationList (view) and remove duplicate notifications
@@ -254,7 +264,10 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         for (i in list) {
             // 0=at start, 1=5m, 2=10m, 3=15m, 4=30m, 5=1h, 6=2h, 7=1d, 8=1w, 9=at end
             when (i) {
-                0 -> editedEvent.eventNotificationList.add(EventNotification(editedEvent.eventStartDate, editedEvent.eventStartTime, 0))
+                0 -> {
+                    val rc = Random.nextInt(0, 100000000)
+                    editedEvent.eventNotificationList.add(EventNotification(editedEvent.eventStartDate, editedEvent.eventStartTime, rc,0))
+                }
                 1 -> addNotifToCollection(dt.minusMinutes(5), 1)
                 2 -> addNotifToCollection(dt.minusMinutes(10), 2)
                 3 -> addNotifToCollection(dt.minusMinutes(15), 3)
@@ -263,9 +276,14 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                 6 -> addNotifToCollection(dt.minusHours(2), 6)
                 7 -> addNotifToCollection(dt.minusDays(1), 7)
                 8 -> addNotifToCollection(dt.minusWeeks(1), 8)
-                9 -> editedEvent.eventNotificationList.add(EventNotification(editedEvent.eventEndDate, editedEvent.eventEndTime, 9))
+                9 -> {
+                    val rc = Random.nextInt(0, 100000000)
+                    editedEvent.eventNotificationList.add(EventNotification(editedEvent.eventEndDate, editedEvent.eventEndTime, rc,9))
+                }
             }
         }
+
+
     }
 
     // Helps to parse notifications actual time and date
@@ -279,8 +297,10 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     private fun addNotifToCollection(dt: LocalDateTime, i: Int) {
         // Parse new date and time
         val dtParts: List<String> = parseAndSetNewDT(dt)
+        // Get random int for requestCode
+        val rc = Random.nextInt(0, 100000000)
         // Add them to the list as new EventNotification instance
-        editedEvent.eventNotificationList.add(EventNotification(dtParts[0], dtParts[1], i))
+        editedEvent.eventNotificationList.add(EventNotification(dtParts[0], dtParts[1], rc, i))
     }
 
     override fun onDateSet(p0: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
@@ -366,16 +386,16 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     // Format date string
     private fun formatDate(day: Int, month: Int, year: Int): String{
         return if (day < 10 && month < 10) "0$day/0$month/$year"
-        else if (day < 10 && month > 10) "0$day/$month/$year"
-        else if (day > 10 && month < 10) "$day/0$month/$year"
+        else if (day < 10 && month >= 10) "0$day/$month/$year"
+        else if (day >= 10 && month < 10) "$day/0$month/$year"
         else "$day/$month/$year"
     }
 
     // Format time string
     private fun formatTime(hour: Int, minute: Int): String{
         return if (hour < 10 && minute < 10) "0$hour:0$minute"
-        else if (hour < 10 && minute > 10) "0$hour:$minute"
-        else if (hour > 10 && minute < 10) "$hour:0$minute"
+        else if (hour < 10 && minute >= 10) "0$hour:$minute"
+        else if (hour >= 10 && minute < 10) "$hour:0$minute"
         else "$hour:$minute"
     }
 
@@ -451,6 +471,7 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
     // Finalize edited event and it to DB
     private fun saveEvent() {
+        closekb()
         val name = editEventNameEditText.text.trim().toString()
         val desc =
                 if (editEventDescriptionEditText.text.trim().isNotEmpty()) editEventDescriptionEditText.text.trim().toString()
@@ -467,6 +488,8 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                         .setValue(newEvent)
                         .addOnSuccessListener {
                             Toast.makeText(context, "Event saved!", Toast.LENGTH_SHORT).show()
+                            //cancelNotifications(requireContext())
+                            createPendingNotifications(requireContext(), newEvent)
                             val action: NavDirections = EventEditFragmentDirections.actionEventEditToNavHome()
                             findNavController().navigate(action)
                         }
@@ -479,6 +502,87 @@ class EventEditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         } else {
             editEventNameEditText.requestFocus()
             editEventNameEditText.error = "You must set a name for the event!"
+        }
+    }
+
+    // To cancel old notifications
+    private fun cancelNotifications(context: Context) {
+        // Loop through current events notifications and cancel them
+        for (notif in currentEvent.eventNotificationList) {
+            val title = currentEvent.eventName
+            val desc =
+                when(notif.type) {
+                    0 -> "$title has started!"
+                    1 -> "$title will start in 5 minutes!"
+                    2 -> "$title will start in 10 minutes!"
+                    3 -> "$title will start in 15 minutes!"
+                    4 -> "$title will start in 30 minutes!"
+                    5 -> "$title will start in 1 hour!"
+                    6 -> "$title will start in 2 hours!"
+                    7 -> "$title will start tomorrow!"
+                    8 -> "$title will start in a week!"
+                    9 -> "$title has ended."
+                    else -> ""
+                }
+
+            Log.d("ALARM", "Cancel NOTIF")
+            val intent = Intent(context, NotificationReceiver::class.java)
+            intent.putExtra("title", title)
+            intent.putExtra("description", desc)
+            val pending: PendingIntent = PendingIntent.getBroadcast(context, notif.rc!!, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+            // Cancel notification
+            val manager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            manager.cancel(pending)
+        }
+    }
+
+    // Create notification and set Alarm manager to time it
+    private fun createPendingNotifications(context: Context, event: Event) {
+        // Create new pending notifications
+        for (notif in event.eventNotificationList) {
+            // Get time from now until notification push time in ms
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+            val showTime: LocalDateTime = LocalDateTime.parse("${notif.date} ${notif.time}", formatter)
+            val timeTo = LocalDateTime.now().until(showTime, ChronoUnit.MILLIS)
+            Log.d("TIMETO", "$timeTo")
+
+            val title = event.eventName
+            val desc =
+                when(notif.type) {
+                    0 -> "$title has started!"
+                    1 -> "$title will start in 5 minutes!"
+                    2 -> "$title will start in 10 minutes!"
+                    3 -> "$title will start in 15 minutes!"
+                    4 -> "$title will start in 30 minutes!"
+                    5 -> "$title will start in 1 hour!"
+                    6 -> "$title will start in 2 hours!"
+                    7 -> "$title will start tomorrow!"
+                    8 -> "$title will start in a week!"
+                    9 -> "$title has ended."
+                    else -> ""
+                }
+
+            Log.d("TYPE", "${notif.type}")
+            val intent = Intent(context, NotificationReceiver::class.java)
+            intent.putExtra("title", title)
+            intent.putExtra("description", desc)
+            val pending: PendingIntent = PendingIntent.getBroadcast(context, notif.rc!!, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+            //Schedule
+            val manager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+timeTo, pending)
+        }
+    }
+
+    // Close keyboard
+    private fun closekb() {
+        val activity = requireActivity()
+
+        val view = activity.currentFocus
+        if (view != null) {
+            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0)
         }
     }
 
