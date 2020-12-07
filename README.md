@@ -15,3 +15,7 @@ A Calender app, which shows all your meetings, the location of the meeting and t
 ## Screenshots
 
 <img src="Documents/Screenshots/Screenshot1.jpg" alt="Log in" width="200"/>
+<img src="Documents/Screenshots/Screenshot2.jpg" alt="Log in" width="200"/>
+<img src="Documents/Screenshots/Screenshot3.jpg" alt="Log in" width="200"/>
+<img src="Documents/Screenshots/Screenshot4.jpg" alt="Log in" width="200"/>
+<img src="Documents/Screenshots/Screenshot5.jpg" alt="Log in" width="200"/>
