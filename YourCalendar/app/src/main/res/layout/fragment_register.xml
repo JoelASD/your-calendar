@@ -8,8 +8,6 @@
     android:gravity="center_horizontal"
     tools:context=".RegisterFragment">
 
-    <!-- add values to proper files -->
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
