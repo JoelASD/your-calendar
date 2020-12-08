@@ -13,6 +13,8 @@ A Calender app, which shows all your meetings, the location of the meeting and t
 * [Demo video](https://www.youtube.com/watch?v=H-jfpvaSby4&feature=youtu.be)
 * [End report](https://gitlab.labranet.jamk.fi/AA4915/your-calendar/-/wikis/End-report)
 
+Self evaluations can be found in wiki
+
 ## Screenshots
 
 <img src="Documents/Screenshots/Screenshot1.jpg" alt="Log in" width="200"/>
